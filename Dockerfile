@@ -22,4 +22,4 @@ COPY . .
 EXPOSE 5173
 
 # Step 8: Define the default command to run the app
-CMD ["npm", "run", "prod", "--", "--host", "0.0.0.0"]
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
