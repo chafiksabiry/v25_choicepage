@@ -1,0 +1,167 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Building2, User2, X, ArrowRight, ArrowLeft, Briefcase, Award, Clock } from 'lucide-react';
+import { supabase } from '../lib/supabase';
+
+export function SetupWizard({ onClose }: { onClose: () => void }) {
+  const [step, setStep] = useState(1);
+  const [flowType, setFlowType] = useState<'company' | 'professional' | null>(null);
+  const navigate = useNavigate();
+
+  const handleSelection = (type: 'post' | 'find') => {
+    if (type === 'post') {
+      setFlowType('company');
+    } else {
+      setFlowType('professional');
+    }
+    setStep(2);
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-2xl w-full max-w-2xl p-8 relative">
+        <button 
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+          aria-label="Close"
+        >
+          <X className="w-6 h-6" />
+        </button>
+
+        {step === 1 && (
+          <div className="text-center">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Welcome to Contact Center Hub!</h2>
+            <p className="text-gray-600 mb-8">
+              What would you like to do today?
+            </p>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <button
+                onClick={() => handleSelection('post')}
+                className="group p-6 border-2 border-gray-200 rounded-xl hover:border-blue-500 transition-colors"
+              >
+                <div className="flex flex-col items-center">
+                  <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-4 group-hover:bg-blue-500 transition-colors">
+                    <Building2 className="w-8 h-8 text-blue-600 group-hover:text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">Post a Gig</h3>
+                  <p className="text-gray-600 text-sm">For companies looking to hire contact center professionals</p>
+                </div>
+              </button>
+
+              <button
+                onClick={() => handleSelection('find')}
+                className="group p-6 border-2 border-gray-200 rounded-xl hover:border-blue-500 transition-colors"
+              >
+                <div className="flex flex-col items-center">
+                  <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-4 group-hover:bg-blue-500 transition-colors">
+                    <User2 className="w-8 h-8 text-blue-600 group-hover:text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">Find a Gig</h3>
+                  <p className="text-gray-600 text-sm">For professionals seeking contact center opportunities</p>
+                </div>
+              </button>
+            </div>
+
+            <p className="mt-8 text-sm text-gray-500">
+              Select your preferred action to continue. You'll be able to customize your experience on the next page.
+            </p>
+          </div>
+        )}
+
+        {step === 2 && flowType === 'company' && (
+          <div className="text-center">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Welcome to Harx!</h2>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+              <p className="text-gray-700 mb-4">
+                We're excited to have you join our platform! Before you can post your first gig, we need to set up your company profile. This will help professionals learn more about your organization and make informed decisions.
+              </p>
+              <p className="text-gray-700">
+                The next steps will guide you through creating your company profile, including:
+              </p>
+              <ul className="text-left mt-4 space-y-2">
+                <li className="flex items-center text-gray-700">
+                  <ArrowRight className="w-4 h-4 mr-2 text-blue-600" />
+                  Company information and description
+                </li>
+                <li className="flex items-center text-gray-700">
+                  <ArrowRight className="w-4 h-4 mr-2 text-blue-600" />
+                  Contact details
+                </li>
+                <li className="flex items-center text-gray-700">
+                  <ArrowRight className="w-4 h-4 mr-2 text-blue-600" />
+                  Company logo and branding
+                </li>
+              </ul>
+            </div>
+            
+            <div className="flex justify-between">
+              <button
+                onClick={() => setStep(1)}
+                className="flex items-center text-gray-600 hover:text-gray-800"
+              >
+                <ArrowLeft className="w-5 h-5 mr-2" />
+                Back
+              </button>
+              <button
+                onClick={() => navigate('/company-setup')}
+                className="bg-blue-600 text-white py-2 px-6 rounded-lg flex items-center hover:bg-blue-700 transition-colors"
+              >
+                Continue
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {step === 2 && flowType === 'professional' && (
+          <div className="text-center">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Welcome to Harx!</h2>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+              <p className="text-gray-700 mb-4">
+                We're thrilled to have you join our community of contact center professionals! Before you start exploring gigs, let's set up your professional profile to help you stand out to potential employers.
+              </p>
+              <p className="text-gray-700">
+                Your profile setup will include:
+              </p>
+              <ul className="text-left mt-4 space-y-2">
+                <li className="flex items-center text-gray-700">
+                  <Briefcase className="w-4 h-4 mr-2 text-blue-600" />
+                  Work experience and skills
+                </li>
+                <li className="flex items-center text-gray-700">
+                  <Award className="w-4 h-4 mr-2 text-blue-600" />
+                  Certifications and achievements
+                </li>
+                <li className="flex items-center text-gray-700">
+                  <Clock className="w-4 h-4 mr-2 text-blue-600" />
+                  Availability and preferences
+                </li>
+              </ul>
+              <p className="mt-4 text-gray-700">
+                A complete profile increases your chances of finding the perfect gig that matches your skills and preferences.
+              </p>
+            </div>
+            
+            <div className="flex justify-between">
+              <button
+                onClick={() => setStep(1)}
+                className="flex items-center text-gray-600 hover:text-gray-800"
+              >
+                <ArrowLeft className="w-5 h-5 mr-2" />
+                Back
+              </button>
+              <button
+                onClick={() => navigate('/professional-setup')}
+                className="bg-blue-600 text-white py-2 px-6 rounded-lg flex items-center hover:bg-blue-700 transition-colors"
+              >
+                Continue
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
