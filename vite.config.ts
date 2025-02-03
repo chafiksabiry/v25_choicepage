@@ -20,6 +20,7 @@ export default defineConfig({
     modulePreload: true,
     cssCodeSplit: true, // Enable CSS splitting for modular builds
     rollupOptions: {
+      external: ['systemjs'],
       output: {
         format: 'system', // Use SystemJS for qiankun integration
       },
