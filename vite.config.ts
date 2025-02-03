@@ -21,6 +21,7 @@ export default defineConfig({
     cssCodeSplit: true, // Enable CSS splitting for modular builds
     rollupOptions: {
       external: ['systemjs'],
+      treeshake: false, // Disable treeshaking to prevent issues with qiankun
       output: {
         format: 'system', // Use SystemJS for qiankun integration
       },
