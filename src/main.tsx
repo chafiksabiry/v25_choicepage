@@ -4,8 +4,13 @@ import { BrowserRouter } from 'react-router-dom';  // Add this import
 import App from './App';
 import './index.css';
 import './public-path';
-import 'systemjs'
 
+
+
+// Add this check
+if (!window.System) {
+  throw new Error('SystemJS is not loaded!');
+}
 // Function to render the React app
 function render(props: { container?: HTMLElement }) {
   const { container } = props;
