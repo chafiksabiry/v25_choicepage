@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom';  // Add this import
 import App from './App';
 import './index.css';
 import './public-path';
-
+import 'systemjs'
 
 // Function to render the React app
 function render(props: { container?: HTMLElement }) {
