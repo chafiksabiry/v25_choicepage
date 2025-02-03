@@ -4,12 +4,17 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://unpkg.com/systemjs/dist/system.js"></script>
     <title>Choice Page</title>
+    <!-- Include SystemJS if needed -->
+    <script src="https://unpkg.com/systemjs/dist/system.js"></script>
   </head>
   <body>
     <div id="root"></div>
-    
-    <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Use SystemJS to load your main.tsx file -->
+    <script>
+      System.import('/src/main.tsx')
+        .catch((err) => console.error('Error loading main.tsx:', err));
+    </script>
   </body>
 </html>
