@@ -13,7 +13,7 @@ export default defineConfig({
   server: {
     port: 5173, // Set the development server to use port 5172
     cors: true, // Enable CORS to allow communication between host and microfrontends
-    hmr : false, // Disable HMR to prevent conflicts with qiankun
+    hmr : true, // Disable HMR to prevent conflicts with qiankun
   },
   build: {
     target: 'esnext', // Ensure compatibility with modern browsers for qiankun
