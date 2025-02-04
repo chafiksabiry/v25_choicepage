@@ -16,7 +16,7 @@ export default defineConfig({
     host: '0.0.0.0', // Allow access from Docker
     port: 5173,
     cors: true,
-    hmr: true,
+    hmr: false,
   },
   build: {
     target: 'esnext',
