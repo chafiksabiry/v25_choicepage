@@ -17,7 +17,7 @@ export default defineConfig({
     host: '0.0.0.0', // Allow access from Docker
     port: 5173,
     cors: {
-      origin: "http://38.242.208.242:3000",
+      origin: "*",
       methods: ['GET', 'POST', 'PUT', 'DELETE'],
       allowedHeaders: ['Content-Type', 'Authorization'],
       credentials: true, // Allow cookies to be sent with requests (if needed)
