@@ -13,9 +13,13 @@ export default defineConfig({
     qiankun('app-name', { useDevMode: !isProduction }) // Disable dev mode in production
   ],
   server: {
+
     host: '0.0.0.0', // Allow access from Docker
     port: 5173,
-    cors: true,
+    cors: {
+      origin: "*",
+      methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    },
     hmr: false,
   },
   build: {
