@@ -12,22 +12,8 @@
     <!-- Load SystemJS from CDN -->
     <script src="https://cdn.jsdelivr.net/npm/systemjs@6.12.1/dist/system.js" defer></script>
 
-    <script>
-      window.addEventListener('load', async function () {
-        if (window.System) {
-          console.log('✅ SystemJS Loaded:', window.System);
-
-          try {
-            // Vite builds files in `/dist`, make sure the path is correct
-            await System.import('/index.js');
-            console.log('✅ App loaded successfully');
-          } catch (error) {
-            console.error('❌ Failed to load main app:', error);
-          }
-        } else {
-          console.error('❌ SystemJS failed to load');
-        }
-      });
+    <script type="module" src="/src/main.tsx">
+      
     </script>
   </body>
 </html>

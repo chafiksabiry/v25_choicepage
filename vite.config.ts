@@ -7,7 +7,7 @@ const isQiankun = process.env.QIANKUN === 'true';
 const isProduction = process.env.NODE_ENV === 'production';
 
 export default defineConfig({
-  base: isQiankun ? './' : '/', // Adjust base path for Qiankun compatibility
+  base: isQiankun ? './' : './', // Adjust base path for Qiankun compatibility
   plugins: [
     react(),
     qiankun('app-name', { useDevMode: !isProduction }) // Disable dev mode in production
@@ -24,10 +24,12 @@ export default defineConfig({
     cssCodeSplit: true,
     rollupOptions: {
       treeshake: false,
+      
       output: {
-        format: 'system', // Ensures compatibility with Qiankun
+        format: 'es', // Ensures compatibility with Qiankun
         entryFileNames: '[name].js', // Avoid hashed names for micro-frontend consistency
       },
+
     },
   },
   resolve: {
