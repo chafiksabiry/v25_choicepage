@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "VITE_QIANKUN=true vite",
+    "dev:standalone": "VITE_QIANKUN=false vite",
     "build": "vite build",
     "build:qiankun": "vite build --mode qiankun",
     "lint": "eslint .",
