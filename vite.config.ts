@@ -1,56 +1,71 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
-import { resolve } from 'path';
+import path from 'path';
 import qiankun from 'vite-plugin-qiankun';
+import * as cheerio from 'cheerio';
 
-const isQiankun = process.env.QIANKUN === 'true';
-const isProduction = process.env.NODE_ENV === 'production';
-
-export default defineConfig({
-  base: './', // Adjust base path for Qiankun compatibility
-  plugins: [
-    react(),
-    qiankun('app-name', { useDevMode: !isProduction }) // Disable dev mode in production
-  ],
-  server: {
-
-    host: '0.0.0.0', // Allow access from Docker
-    port: 5173,
-    cors: {
-      origin: "http://localhost:3000",
-      methods: ['GET', 'POST', 'PUT', 'DELETE'],
-      allowedHeaders: ['Content-Type', 'Authorization'],
-      credentials: true, // Allow cookies to be sent with requests (if needed)
+// Plugin to remove React Refresh preamble
+const removeReactRefreshScript = () => {
+  return {
+    name: 'remove-react-refresh',
+    transformIndexHtml(html) {
+      const $ = cheerio.load(html);
+      $('script[src="/@react-refresh"]').remove();
+      return $.html();
     },
-    headers: {
-      'Access-Control-Allow-Origin': '*',
+  };
+};
+
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
+
+  return {
+    base: 'http://localhost:5173/',
+    plugins: [
+      react({
+        jsxRuntime: 'classic',
+      }),
+      qiankun('app2', {
+        useDevMode: true,
+        scopeCss: true,
+      }),
+      removeReactRefreshScript(), // Add the script removal plugin
+    ],
+
+    define: {
+      'import.meta.env': env,
     },
-    hmr: false,
-  },
-  build: {
-    target: 'esnext',
-    modulePreload: true,
-    cssCodeSplit: true,
-    rollupOptions: {
-      treeshake: false,
-      output: {
-        format: 'umd',       // Qiankun requires UMD format
-        entryFileNames: `[name].js`,
-        chunkFileNames: `[name].js`,
-        assetFileNames: `[name].[ext]`,
+    server: {
+      port: 5173,
+      cors: true,
+      hmr: false,
+      fs: {
+        strict: true, // Ensure static assets are correctly resolved
       },
-
     },
-  },
-  define: {
-    'process.env.VITE_QIANKUN': isQiankun ? 'true' : 'false', // Expose whether Qiankun mode is enabled
-  },
-  resolve: {
-    alias: {
-      '@': resolve(__dirname, 'src'),
+    build: {
+      target: 'esnext',
+      cssCodeSplit: false,
+      rollupOptions: {
+        output: {
+          format: 'umd',
+          name: 'app2',
+          entryFileNames: 'index.js', // Fixed name for the JS entry file
+          chunkFileNames: 'chunk-[name].js', // Fixed name for chunks
+          assetFileNames: (assetInfo) => {
+            // Ensure CSS files are consistently named
+            if (assetInfo.name.endsWith('.css')) {
+              return 'index.css';
+            }
+            return '[name].[ext]'; // Default for other asset types
+          },
+        },
+      },
     },
-  },
-  optimizeDeps: {
-    exclude: ['lucide-react'], // Exclude specific dependencies from pre-bundling
-  },
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, 'src'),
+      },
+    },
+  };
 });

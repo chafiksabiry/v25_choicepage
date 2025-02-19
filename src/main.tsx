@@ -1,13 +1,12 @@
+import React from 'react';
 import './public-path';  // For proper Qiankun integration
+import { qiankunWindow } from 'vite-plugin-qiankun/dist/helper';
+
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';  // Use HashRouter for micro-frontends
 import App from './App';
 import './index.css';
-
-if (!window.System) {
-  throw new Error('SystemJS is not loaded!');
-}
 
 // Store the root instance for proper unmounting
 let root: ReturnType<typeof createRoot> | null = null;
@@ -36,21 +35,9 @@ function render(props: { container?: HTMLElement }) {
   }
 }
 
-// Standalone mode: If the app is running outside Qiankun, it will use this code
-if (window.__POWERED_BY_QIANKUN__) {
-  console.log('[App] Running inside Qiankun');
-  // Qiankun will control the lifecycle
-} else {
-  console.log('[App] Running in standalone mode');
-  render({});
-}
-
-// Qiankun lifecycle methods
-
 export async function bootstrap() {
   console.time('[App2] bootstrap');
   console.log('[App2] Bootstrapping...');
-  // Return a resolved promise (or perform async initialization if needed)
   return Promise.resolve();
 }
 
@@ -81,4 +68,14 @@ export async function unmount(props: any) {
     console.warn('[App2] Root element not found for unmounting!');
   }
   return Promise.resolve();
+}
+
+// Standalone mode: If the app is running outside Qiankun, it will use this code
+if (!qiankunWindow.__POWERED_BY_QIANKUN__) {
+  console.log('[App] Running in standalone mode');
+  render({});
+} else {
+  console.log('[App] Running inside Qiankun');
+  // Qiankun will control the lifecycle
+  render({});
 }
