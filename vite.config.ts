@@ -37,8 +37,12 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       port: 5173,
-      cors: true,
-      hmr: false,
+      cors: {
+        origin: 'https://v25.harx.ai', // The domain from which you want to allow CORS requests
+        methods: ['GET', 'POST', 'OPTIONS'], // Allowed HTTP methods
+        allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
+        credentials: true, // If you need to send credentials (cookies, HTTP authentication, etc.)
+      },hmr: false,
       fs: {
         strict: true, // Ensure static assets are correctly resolved
       },
