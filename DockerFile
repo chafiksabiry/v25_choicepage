@@ -34,4 +34,4 @@ RUN npm install -g http-server
 RUN npm install -g serve
 
 # Use serve to serve the build with CORS enabled
-CMD serve -s dist -l 5173 
+CMD serve -s dist -l 5173 --cors 
