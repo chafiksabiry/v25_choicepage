@@ -30,4 +30,8 @@ EXPOSE 5173
 # Install a lightweight HTTP server to serve the build
 RUN npm install -g http-server
 
-CMD http-server ./dist -p 5173 
+# Install serve
+RUN npm install -g serve
+
+# Use serve to serve the build with CORS enabled
+CMD serve -s dist -l 5173 --cors 
