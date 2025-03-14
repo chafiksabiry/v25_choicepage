@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     // Use a relative base path for development to avoid CORS issues
-    base:  'https://v25.harx.ai/choicepage',
+    base: isDevelopment ? '/' : './',
     plugins: [
       react({
         jsxRuntime: 'classic',
@@ -54,17 +54,30 @@ export default defineConfig(({ mode }) => {
     build: {
       target: 'esnext',
       cssCodeSplit: false,
+      outDir: 'dist',
+      assetsDir: 'assets',
+      emptyOutDir: true,
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: false, // Keep console logs for debugging
+        },
+      },
       rollupOptions: {
         output: {
-          format: 'es', // Change to ES modules format
-          entryFileNames: 'index.js', // Fixed name for the JS entry file
-          chunkFileNames: 'chunk-[name].js', // Fixed name for chunks
+          format: 'es', // ES modules format
+          entryFileNames: 'index.js',
+          chunkFileNames: 'chunk-[name].js',
           assetFileNames: (assetInfo) => {
             // Ensure CSS files are consistently named
             if (assetInfo.name?.endsWith('.css')) {
               return 'index.css';
             }
-            return '[name].[ext]'; // Default for other asset types
+            return 'assets/[name].[ext]';
+          },
+          // Add manualChunks to split vendor code
+          manualChunks: {
+            vendor: ['react', 'react-dom', 'react-router-dom'],
           },
         },
       },
