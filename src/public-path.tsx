@@ -14,12 +14,15 @@ declare global {
     // Ensure the injected path is defined before assigning it
     if (window.__INJECTED_PUBLIC_PATH_BY_QIANKUN__) {
       __webpack_public_path__ = window.__INJECTED_PUBLIC_PATH_BY_QIANKUN__;
-      console.log('Injected Public Path: ', window.__INJECTED_PUBLIC_PATH_BY_QIANKUN__);
-
+      console.log('[Public Path] Injected Public Path: ', window.__INJECTED_PUBLIC_PATH_BY_QIANKUN__);
     } else {
       console.warn(
-        '[Qiankun] __INJECTED_PUBLIC_PATH_BY_QIANKUN__ is not defined!'
+        '[Public Path] __INJECTED_PUBLIC_PATH_BY_QIANKUN__ is not defined!'
       );
     }
+  } else {
+    // For standalone mode, use the base URL from the import.meta.env
+    console.log('[Public Path] Running in standalone mode, using default public path');
+    // No need to set __webpack_public_path__ in Vite as it handles this automatically
   }
   

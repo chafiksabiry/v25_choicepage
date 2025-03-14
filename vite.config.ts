@@ -8,7 +8,7 @@ import * as cheerio from 'cheerio';
 const removeReactRefreshScript = () => {
   return {
     name: 'remove-react-refresh',
-    transformIndexHtml(html) {
+    transformIndexHtml(html: string) {
       const $ = cheerio.load(html);
       $('script[src="/@react-refresh"]').remove();
       return $.html();
@@ -18,15 +18,18 @@ const removeReactRefreshScript = () => {
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
+  const isDevelopment = mode === 'development';
 
   return {
-    base: 'https://choicepage.harx.ai/',
+    // Use a relative base path for development to avoid CORS issues
+    base:  'https://v25.harx.ai/choicepage',
     plugins: [
       react({
         jsxRuntime: 'classic',
       }),
       qiankun('app2', {
         useDevMode: true,
+        // @ts-ignore
         scopeCss: true,
       }),
       removeReactRefreshScript(), // Add the script removal plugin
@@ -38,11 +41,12 @@ export default defineConfig(({ mode }) => {
     server: {
       port: 5173,
       cors: {
-        origin: 'https://v25.harx.ai', // The domain from which you want to allow CORS requests
+        origin: ['https://v25.harx.ai', 'http://localhost:3000'], // Allow both production and local development
         methods: ['GET', 'POST', 'OPTIONS'], // Allowed HTTP methods
-        allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
+        allowedHeaders: ['Content-Type', 'Authorization', 'access-control-allow-origin'], // Allowed headers
         credentials: true, // If you need to send credentials (cookies, HTTP authentication, etc.)
-      },hmr: false,
+      },
+      hmr: false,
       fs: {
         strict: true, // Ensure static assets are correctly resolved
       },
@@ -52,13 +56,12 @@ export default defineConfig(({ mode }) => {
       cssCodeSplit: false,
       rollupOptions: {
         output: {
-          format: 'umd',
-          name: 'app2',
+          format: 'es', // Change to ES modules format
           entryFileNames: 'index.js', // Fixed name for the JS entry file
           chunkFileNames: 'chunk-[name].js', // Fixed name for chunks
           assetFileNames: (assetInfo) => {
             // Ensure CSS files are consistently named
-            if (assetInfo.name.endsWith('.css')) {
+            if (assetInfo.name?.endsWith('.css')) {
               return 'index.css';
             }
             return '[name].[ext]'; // Default for other asset types

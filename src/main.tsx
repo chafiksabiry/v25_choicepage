@@ -2,6 +2,8 @@ import React from 'react';
 import './public-path';  // For proper Qiankun integration
 import { qiankunWindow } from 'vite-plugin-qiankun/dist/helper';
 
+console.log('[App2] main.tsx is being executed');
+
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';  // Use HashRouter for micro-frontends
@@ -13,6 +15,9 @@ let root: ReturnType<typeof createRoot> | null = null;
 
 function render(props: { container?: HTMLElement }) {
   const { container } = props;
+  console.log('[App2] Render function called with props:', props);
+  console.log('[App2] Container provided:', container);
+  
   const rootElement = container
     ? container.querySelector('#root')
     : document.getElementById('root');
@@ -21,8 +26,10 @@ function render(props: { container?: HTMLElement }) {
     console.log('[App2] Rendering in container:', rootElement);
     // Create the root instance if it doesn't exist
     if (!root) {
+      console.log('[App2] Creating new root instance');
       root = createRoot(rootElement);
     }
+    console.log('[App2] Rendering App component');
     root.render(
       <StrictMode>
         <HashRouter>
@@ -30,8 +37,10 @@ function render(props: { container?: HTMLElement }) {
         </HashRouter>
       </StrictMode>
     );
+    console.log('[App2] App component rendered');
   } else {
     console.warn('[App2] Root element not found!');
+    console.log('[App2] Document body:', document.body.innerHTML);
   }
 }
 
@@ -70,12 +79,31 @@ export async function unmount(props: any) {
   return Promise.resolve();
 }
 
+// Add error handling for module loading
+window.addEventListener('error', (event) => {
+  console.error('[App2] Error loading module:', event);
+});
+
 // Standalone mode: If the app is running outside Qiankun, it will use this code
 if (!qiankunWindow.__POWERED_BY_QIANKUN__) {
   console.log('[App] Running in standalone mode');
-  render({});
+  console.log('[App] Document ready state:', document.readyState);
+  
+  // Wait for the DOM to be fully loaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('[App] DOM content loaded, rendering app');
+      render({});
+    });
+  } else {
+    console.log('[App] DOM already loaded, rendering app immediately');
+    try {
+      render({});
+    } catch (error) {
+      console.error('[App] Error rendering app:', error);
+    }
+  }
 } else {
   console.log('[App] Running inside Qiankun');
   // Qiankun will control the lifecycle
-  render({});
 }
