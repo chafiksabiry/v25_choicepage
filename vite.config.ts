@@ -18,11 +18,11 @@ const removeReactRefreshScript = () => {
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
-  const isDevelopment = mode === 'development';
+  //const isDevelopment = mode === 'development';
 
   return {
     // Use a relative base path for development to avoid CORS issues
-    base: isDevelopment ? '/' : './',
+    base: 'https://choicepage.harx.ai',
     plugins: [
       react({
         jsxRuntime: 'classic',
