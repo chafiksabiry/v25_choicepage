@@ -16,6 +16,25 @@ const removeReactRefreshScript = () => {
   };
 };
 
+// Plugin to fix module script MIME type issues
+const fixModuleScriptMimeType = () => {
+  return {
+    name: 'fix-module-script-mime-type',
+    transformIndexHtml(html: string) {
+      const $ = cheerio.load(html);
+      // Change import script to use defer instead of type="module"
+      $('script').each((_, el) => {
+        const script = $(el);
+        const content = script.html() || '';
+        if (content.includes('import(') && !script.attr('type')) {
+          script.attr('type', 'module');
+        }
+      });
+      return $.html();
+    },
+  };
+};
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   const isDevelopment = mode === 'development';
@@ -33,6 +52,7 @@ export default defineConfig(({ mode }) => {
         scopeCss: true,
       }),
       removeReactRefreshScript(), // Add the script removal plugin
+      fixModuleScriptMimeType(), // Add the MIME type fix plugin
     ],
 
     define: {
@@ -50,6 +70,10 @@ export default defineConfig(({ mode }) => {
       fs: {
         strict: true, // Ensure static assets are correctly resolved
       },
+      headers: {
+        // Set proper MIME types for JavaScript modules
+        'Content-Type': 'application/javascript; charset=utf-8',
+      },
     },
     build: {
       target: 'esnext',
@@ -65,8 +89,7 @@ export default defineConfig(({ mode }) => {
       },
       rollupOptions: {
         output: {
-          format: 'umd', // Universal Module Definition format for better compatibility
-          name: 'app2', // Required for UMD format
+          format: 'es', // Change from 'umd' to 'es' for proper module loading
           entryFileNames: 'index.js',
           chunkFileNames: 'chunk-[name].js',
           assetFileNames: (assetInfo) => {
