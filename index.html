@@ -2,17 +2,42 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <base href="/choicepage/" />
     <link rel="icon" type="image/svg+xml" href="./vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Choice Page</title>
     <script type="text/javascript">
       window.addEventListener('error', function(event) {
         console.error('Script loading error:', event);
+        // Log more details about the error
+        if (event.target && event.target.src) {
+          console.error('Failed to load script:', event.target.src);
+        }
+      });
+      
+      // Add a function to check if files are accessible
+      function checkResource(url) {
+        fetch(url)
+          .then(response => {
+            console.log(`Resource ${url} status: ${response.status}, type: ${response.headers.get('content-type')}`);
+            return response.text();
+          })
+          .then(text => {
+            console.log(`First 100 chars: ${text.substring(0, 100)}`);
+          })
+          .catch(error => {
+            console.error(`Failed to fetch ${url}:`, error);
+          });
+      }
+      
+      // Check main JavaScript file
+      window.addEventListener('DOMContentLoaded', function() {
+        checkResource('./index.js');
       });
     </script>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="./src/main.tsx"></script>
   </body>
 </html>

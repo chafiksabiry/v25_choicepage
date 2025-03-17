@@ -37,6 +37,12 @@ const fixModuleScriptMimeType = () => {
         if (!script.attr('crossorigin')) {
           script.attr('crossorigin', 'anonymous');
         }
+        
+        // Convert relative paths to absolute for deployed environment
+        const src = script.attr('src');
+        if (src && src.startsWith('/') && !src.startsWith('//')) {
+          script.attr('src', `./choicepage${src}`);
+        }
       });
       
       return $.html();
@@ -50,7 +56,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     // Use a relative base path for production to avoid MIME type issues
-    base: isDevelopment ? '/' : './',
+    base: isDevelopment ? '/' : '/choicepage/',
     plugins: [
       react({
         jsxRuntime: 'classic',

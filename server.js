@@ -48,17 +48,50 @@ app.use(express.static(path.join(__dirname, 'dist'), {
 }));
 
 // Special handler for index.js to ensure it's served correctly
-app.get('/index.js', (req, res) => {
+app.get(['/index.js', '/choicepage/index.js'], (req, res) => {
   const filePath = path.join(__dirname, 'dist', 'index.js');
   
   // Check if file exists
   if (fs.existsSync(filePath)) {
-    console.log('Serving index.js with explicit JavaScript MIME type');
+    console.log(`Serving index.js with explicit JavaScript MIME type for path: ${req.path}`);
     res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
-    res.sendFile(filePath);
+    
+    // Read the file content to log the first few characters for debugging
+    try {
+      const content = fs.readFileSync(filePath, 'utf8');
+      console.log(`First 100 characters of index.js: ${content.substring(0, 100)}`);
+      
+      // Send the file
+      res.sendFile(filePath);
+    } catch (error) {
+      console.error('Error reading index.js:', error);
+      res.status(500).send('Error reading file');
+    }
   } else {
     console.error('index.js file not found at path:', filePath);
     res.status(404).send('File not found');
+  }
+});
+
+// Handle requests for assets in the choicepage subdirectory
+app.get('/choicepage/*', (req, res, next) => {
+  // Remove the /choicepage prefix and serve from dist
+  const filePath = req.path.replace(/^\/choicepage/, '');
+  console.log(`Handling choicepage request: ${req.path} -> ${filePath}`);
+  
+  // Check if the file exists in dist
+  const fullPath = path.join(__dirname, 'dist', filePath);
+  if (fs.existsSync(fullPath)) {
+    // Set appropriate MIME type
+    if (fullPath.endsWith('.js')) {
+      res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+    } else if (fullPath.endsWith('.css')) {
+      res.setHeader('Content-Type', 'text/css; charset=utf-8');
+    }
+    res.sendFile(fullPath);
+  } else {
+    console.log(`File not found: ${fullPath}, falling back to index.html`);
+    next();
   }
 });
 
@@ -75,6 +108,19 @@ app.listen(PORT, () => {
   try {
     const files = fs.readdirSync(path.join(__dirname, 'dist'));
     console.log('Files in dist directory:', files);
+    
+    // Check if index.js exists and log its size
+    const indexJsPath = path.join(__dirname, 'dist', 'index.js');
+    if (fs.existsSync(indexJsPath)) {
+      const stats = fs.statSync(indexJsPath);
+      console.log(`index.js exists, size: ${stats.size} bytes`);
+      
+      // Log the first few characters of index.js
+      const content = fs.readFileSync(indexJsPath, 'utf8');
+      console.log(`First 100 characters of index.js: ${content.substring(0, 100)}`);
+    } else {
+      console.error('index.js does not exist in dist directory');
+    }
   } catch (error) {
     console.error('Error reading dist directory:', error);
   }
