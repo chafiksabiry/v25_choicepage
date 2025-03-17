@@ -7,12 +7,12 @@ WORKDIR /app
 # Set environment variables
 ENV VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRyc3Nwa213dHJydW9xZXF4amNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzczMTczNTEsImV4cCI6MjA1Mjg5MzM1MX0.Lp1H4KOBEzYF1yN3B9lOlsQcBgwFVdRc44vgJrZJe7g
 ENV VITE_SUPABASE_URL=https://trsspkmwtrruoqeqxjcf.supabase.co
-ENV NODE_ENV=production
+# Don't set NODE_ENV=production during build to ensure dev dependencies are installed
 
 # Copy package.json and package-lock.json to install dependencies
 COPY package*.json ./
 
-# Install dependencies
+# Install ALL dependencies including dev dependencies
 RUN npm ci
 
 # Copy the source code
