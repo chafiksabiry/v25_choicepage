@@ -65,7 +65,8 @@ export default defineConfig(({ mode }) => {
       },
       rollupOptions: {
         output: {
-          format: 'iife', // Change to immediately invoked function expression for better browser compatibility
+          format: 'umd', // Universal Module Definition format for better compatibility
+          name: 'app2', // Required for UMD format
           entryFileNames: 'index.js',
           chunkFileNames: 'chunk-[name].js',
           assetFileNames: (assetInfo) => {
@@ -74,10 +75,6 @@ export default defineConfig(({ mode }) => {
               return 'index.css';
             }
             return 'assets/[name].[ext]';
-          },
-          // Add manualChunks to split vendor code
-          manualChunks: {
-            vendor: ['react', 'react-dom', 'react-router-dom'],
           },
         },
       },
