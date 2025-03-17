@@ -89,7 +89,7 @@ export default defineConfig(({ mode }) => {
       },
       rollupOptions: {
         output: {
-          format: 'es', // Change from 'umd' to 'es' for proper module loading
+          format: 'es', // Use ES module format
           entryFileNames: 'index.js',
           chunkFileNames: 'chunk-[name].js',
           assetFileNames: (assetInfo) => {
@@ -98,6 +98,10 @@ export default defineConfig(({ mode }) => {
               return 'index.css';
             }
             return 'assets/[name].[ext]';
+          },
+          // Add manualChunks to better control code splitting
+          manualChunks: {
+            vendor: ['react', 'react-dom', 'react-router-dom'],
           },
         },
       },

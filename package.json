@@ -9,7 +9,8 @@
     "build": "vite build",
     "build:qiankun": "vite build --mode qiankun",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "serve": "node server.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.7",
