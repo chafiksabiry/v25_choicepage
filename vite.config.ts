@@ -18,11 +18,11 @@ const removeReactRefreshScript = () => {
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
-  //const isDevelopment = mode === 'development';
+  const isDevelopment = mode === 'development';
 
   return {
     // Use a relative base path for production to avoid MIME type issues
-    base: "/choicepage/",
+    base: isDevelopment ? '/' : './',
     plugins: [
       react({
         jsxRuntime: 'classic',
@@ -65,7 +65,7 @@ export default defineConfig(({ mode }) => {
       },
       rollupOptions: {
         output: {
-          format: 'es', // ES modules format
+          format: 'iife', // Change to immediately invoked function expression for better browser compatibility
           entryFileNames: 'index.js',
           chunkFileNames: 'chunk-[name].js',
           assetFileNames: (assetInfo) => {
