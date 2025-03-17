@@ -16,20 +16,29 @@ const removeReactRefreshScript = () => {
   };
 };
 
-// Plugin to fix module script MIME type issues
+// Enhanced plugin to fix module script MIME type issues
 const fixModuleScriptMimeType = () => {
   return {
     name: 'fix-module-script-mime-type',
     transformIndexHtml(html: string) {
       const $ = cheerio.load(html);
-      // Change import script to use defer instead of type="module"
+      
+      // Ensure all scripts have proper type attributes
       $('script').each((_, el) => {
         const script = $(el);
         const content = script.html() || '';
+        
+        // For dynamic imports, ensure type="module"
         if (content.includes('import(') && !script.attr('type')) {
           script.attr('type', 'module');
         }
+        
+        // Add crossorigin attribute to help with CORS
+        if (!script.attr('crossorigin')) {
+          script.attr('crossorigin', 'anonymous');
+        }
       });
+      
       return $.html();
     },
   };
@@ -61,7 +70,7 @@ export default defineConfig(({ mode }) => {
     server: {
       port: 5173,
       cors: {
-        origin: ['https://v25.harx.ai', 'http://localhost:3000'], // Allow both production and local development
+        origin: ['https://v25.harx.ai', 'http://localhost:3000', 'http://localhost:5173'], // Allow both production and local development
         methods: ['GET', 'POST', 'OPTIONS'], // Allowed HTTP methods
         allowedHeaders: ['Content-Type', 'Authorization', 'access-control-allow-origin'], // Allowed headers
         credentials: true, // If you need to send credentials (cookies, HTTP authentication, etc.)

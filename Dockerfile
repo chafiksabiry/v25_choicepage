@@ -21,6 +21,11 @@ COPY . .
 # Build the app
 RUN npm run build
 
+# Verify the build output
+RUN ls -la dist/
+RUN cat dist/index.html | head -20
+RUN file dist/index.js || echo "index.js not found or not accessible"
+
 # Create a smaller production image
 FROM node:18-alpine AS production
 
@@ -40,6 +45,11 @@ RUN npm ci --omit=dev
 # Copy the server.js file and the built app from the build stage
 COPY --from=build /app/server.js ./
 COPY --from=build /app/dist ./dist
+
+# Verify the copied files
+RUN ls -la
+RUN ls -la dist/
+RUN file dist/index.js || echo "index.js not found or not accessible"
 
 # Expose the port for the Express server
 EXPOSE 5173
