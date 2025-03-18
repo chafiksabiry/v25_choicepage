@@ -22,18 +22,25 @@
     <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/extras/amd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/extras/named-register.min.js"></script>
 
-    <!-- Import map for SystemJS -->
-    <script type="systemjs-importmap">
-      {
-        "imports": {
-          "react": "https://unpkg.com/react@18/umd/react.production.min.js",
-          "react-dom": "https://unpkg.com/react-dom@18/umd/react-dom.production.min.js",
-          "react-router-dom": "https://unpkg.com/react-router-dom@6/dist/umd/react-router-dom.production.min.js"
-        }
-      }
-    </script>
-    
     <script type="text/javascript">
+      window.debug('Configuring SystemJS');
+      
+      // Configure SystemJS
+      System.config({
+        baseURL: '/choicepage',
+        defaultExtension: 'js',
+        meta: {
+          '*.js': {
+            format: 'system'
+          }
+        },
+        map: {
+          'react': 'https://unpkg.com/react@18/umd/react.production.min.js',
+          'react-dom': 'https://unpkg.com/react-dom@18/umd/react-dom.production.min.js',
+          'react-router-dom': 'https://unpkg.com/react-router-dom@6/dist/umd/react-router-dom.production.min.js'
+        }
+      });
+
       // Error handler
       window.addEventListener('error', function(event) {
         console.error('[Error Event]', {
@@ -46,43 +53,55 @@
       });
 
       // Load the application
-      function loadApplication() {
-        if (!window.__POWERED_BY_QIANKUN__) {
-          window.debug('Loading application in standalone mode');
-          const mainScript = '/choicepage/assets/main.js';
-          
-          // First verify the script exists
-          fetch(mainScript, { 
-            method: 'HEAD',
-            headers: {
-              'Accept': 'application/javascript'
-            }
-          })
-          .then(response => {
+      async function loadApplication() {
+        try {
+          if (!window.__POWERED_BY_QIANKUN__) {
+            window.debug('Loading application in standalone mode');
+            const mainScript = '/choicepage/assets/main.js';
+            
+            window.debug('Checking main script availability');
+            const response = await fetch(mainScript, { 
+              method: 'HEAD',
+              headers: {
+                'Accept': 'application/javascript'
+              }
+            });
+
             if (!response.ok) {
               throw new Error(`HTTP error! status: ${response.status}`);
             }
+
             window.debug('Main script verified, proceeding with import');
-            return System.import(mainScript);
-          })
-          .then(() => {
-            window.debug('Application loaded successfully');
-          })
-          .catch(error => {
-            console.error('Failed to load application:', error);
-            if (error.stack) {
-              console.error('Error stack:', error.stack);
+            const module = await System.import(mainScript);
+            window.debug('Module loaded:', module);
+
+            if (typeof module.render === 'function') {
+              window.debug('Calling render function');
+              module.render({});
+            } else {
+              console.error('No render function found in module:', module);
             }
-          });
-        } else {
-          window.debug('Running in Qiankun mode');
+          } else {
+            window.debug('Running in Qiankun mode');
+          }
+        } catch (error) {
+          console.error('Failed to load application:', error);
+          if (error.stack) {
+            console.error('Error stack:', error.stack);
+          }
         }
       }
 
       // Wait for all scripts to load
       window.addEventListener('load', function() {
         window.debug('Window load event fired');
-        setTimeout(loadApplication, 100); // Small delay to ensure everything is ready
+        // Ensure SystemJS is fully loaded
+        if (typeof System !== 'undefined' && typeof System.import === 'function') {
+          window.debug('SystemJS is ready');
+          loadApplication();
+        } else {
+          console.error('SystemJS not properly initialized');
+        }
       });
     </script>
   </head>
