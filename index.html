@@ -6,46 +6,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Choice Page</title>
     <!-- Load SystemJS first -->
-    <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/system.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/extras/named-register.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/system.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/extras/amd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/extras/named-register.min.js"></script>
     <script type="text/javascript">
+      // Debug logging
+      const debug = (...args) => console.log('[Debug]', ...args);
+
+      // Error handler
       window.addEventListener('error', function(event) {
-        console.error('Script loading error:', event);
-        if (event.target && event.target.src) {
-          console.error('Failed to load script:', event.target.src);
-        }
+        console.error('[Error Event]', {
+          message: event.message,
+          filename: event.filename,
+          lineno: event.lineno,
+          colno: event.colno,
+          error: event.error
+        });
       });
 
-      // Wait for SystemJS to be ready
-      window.addEventListener('load', function() {
-        if (window.System && typeof window.System.config === 'function') {
+      // Initialize SystemJS
+      function initializeSystem() {
+        debug('Initializing SystemJS');
+        try {
+          if (!window.System) {
+            throw new Error('SystemJS not found');
+          }
+
           System.config({
             baseURL: window.__POWERED_BY_QIANKUN__ ? '/app2' : '/choicepage',
-            defaultExtension: false,
+            defaultExtension: 'js',
             meta: {
               '*.js': {
-                format: 'system'
+                format: 'system',
+                scriptLoad: true
               }
+            },
+            warnings: true,
+            babelOptions: {
+              modules: 'systemjs'
             }
           });
+
+          debug('SystemJS configured successfully');
+          return true;
+        } catch (error) {
+          console.error('Failed to initialize SystemJS:', error);
+          return false;
+        }
+      }
+
+      // Load the application
+      function loadApplication() {
+        if (!window.__POWERED_BY_QIANKUN__) {
+          debug('Loading application in standalone mode');
+          const mainScript = '/choicepage/assets/main.js';
+          debug('Attempting to load:', mainScript);
+          
+          System.import(mainScript)
+            .then(() => {
+              debug('Application loaded successfully');
+            })
+            .catch(error => {
+              console.error('Failed to load application:', error);
+            });
         } else {
-          console.error('SystemJS not properly loaded');
+          debug('Running in Qiankun mode');
+        }
+      }
+
+      // Initialize when DOM is ready
+      document.addEventListener('DOMContentLoaded', function() {
+        debug('DOM Content Loaded');
+        if (initializeSystem()) {
+          loadApplication();
         }
       });
     </script>
   </head>
   <body>
     <div id="root"></div>
-    <script>
-      // Use SystemJS to import the entry point
-      window.addEventListener('load', function() {
-        if (!window.__POWERED_BY_QIANKUN__) {
-          const entryUrl = window.location.origin + '/choicepage/assets/main.js';
-          System.import(entryUrl).catch(function(err) {
-            console.error('Failed to load entry point:', err);
-          });
-        }
-      });
-    </script>
   </body>
 </html>

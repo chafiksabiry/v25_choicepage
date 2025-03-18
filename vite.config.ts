@@ -27,6 +27,11 @@ const fixModuleScriptMimeType = () => {
       $('script').each((_, el) => {
         const script = $(el);
         script.attr('crossorigin', 'anonymous');
+        
+        // Set proper type for SystemJS scripts
+        if (script.attr('src')?.includes('system')) {
+          script.removeAttr('type');
+        }
       });
       
       return $.html();
@@ -69,6 +74,12 @@ export default defineConfig(({ mode }) => {
       modulePreload: false,
       sourcemap: true,
       manifest: true,
+      minify: 'terser',
+      terserOptions: {
+        format: {
+          comments: false,
+        },
+      },
       rollupOptions: {
         input: {
           main: path.resolve(__dirname, 'index.html'),
@@ -79,6 +90,11 @@ export default defineConfig(({ mode }) => {
           chunkFileNames: 'assets/[name].[hash].js',
           assetFileNames: 'assets/[name].[hash].[ext]',
           inlineDynamicImports: false,
+          globals: {
+            'react': 'React',
+            'react-dom': 'ReactDOM',
+            'react-router-dom': 'ReactRouterDOM'
+          }
         },
         external: ['react', 'react-dom', 'react-router-dom'],
       },
