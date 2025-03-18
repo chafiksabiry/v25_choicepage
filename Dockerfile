@@ -14,11 +14,12 @@ FROM node:18-alpine AS production
 WORKDIR /app
 
 COPY package*.json ./
+COPY server.js ./
 RUN npm ci --omit=dev
 
 COPY --from=build /app/dist ./dist  
 
 EXPOSE 5173
 
-# ✅ Run the frontend build directly using Vite
-CMD ["npx", "serve", "-l", "5173", "-s", "dist"]
+# Use the custom server.js instead of the generic serve command
+CMD ["node", "server.js"]
