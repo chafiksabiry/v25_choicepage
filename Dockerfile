@@ -7,18 +7,18 @@ COPY package*.json ./
 RUN npm install
 
 COPY . . 
-RUN npm run build  # This should compile `main.tsx` into `dist/`
+RUN npm run build
 
 # Production image
 FROM node:18-alpine AS production
 WORKDIR /app
 
 # Install serve globally
-RUN npm install -g serve
+RUN npm install -g serve@14.2.1
 
 COPY --from=build /app/dist ./dist
 
 EXPOSE 5173
 
-# Serve the static files from dist directory
-CMD ["serve", "-s", "dist", "-l", "5173"]
+# Serve the static files from dist directory with proper headers
+CMD ["serve", "-s", "dist", "-l", "5173", "--cors"]
