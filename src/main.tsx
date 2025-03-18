@@ -66,4 +66,5 @@ if (!qiankunWindow.__POWERED_BY_QIANKUN__) {
   render({});
 } else {
   console.log('[App2] Running in qiankun mode');
+  render({});
 }
