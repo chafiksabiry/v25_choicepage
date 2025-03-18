@@ -4,7 +4,6 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import { renderWithQiankun, qiankunWindow } from 'vite-plugin-qiankun/dist/helper';
-import 'systemjs';
 
 console.log('[App2] main.tsx is being executed');
 
@@ -29,7 +28,7 @@ export async function mount(props: any) {
 
   root = createRoot(rootElement);
   root.render(
-    <BrowserRouter basename={window.__POWERED_BY_QIANKUN__ ? '/app2' : '/'}>
+    <BrowserRouter basename={window.__POWERED_BY_QIANKUN__ ? '/app2' : '/choicepage'}>
       <App />
     </BrowserRouter>
   );
@@ -55,17 +54,19 @@ const render = (props: any = {}) => {
     }
     root = createRoot(rootElement);
     root.render(
-      <BrowserRouter>
+      <BrowserRouter basename="/choicepage">
         <App />
       </BrowserRouter>
     );
   }
 };
 
+// Export for SystemJS
+export { render };
+
 if (!qiankunWindow.__POWERED_BY_QIANKUN__) {
   console.log('[App2] Running in standalone mode');
   render({});
 } else {
   console.log('[App2] Running in qiankun mode');
-  render({});
 }

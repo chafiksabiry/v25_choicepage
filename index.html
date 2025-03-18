@@ -5,15 +5,22 @@
     <link rel="icon" type="image/svg+xml" href="./vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Choice Page</title>
-    <!-- Load React dependencies -->
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <!-- Load SystemJS -->
-    <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/system.min.js"></script>
+    
+    <!-- Debug logging setup -->
     <script type="text/javascript">
-      // Debug logging
-      const debug = (...args) => console.log('[Debug]', ...args);
+      window.debug = (...args) => console.log('[Debug]', ...args);
+      window.debug('Starting application load');
+    </script>
 
+    <!-- Load dependencies in order -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-router-dom@6/dist/umd/react-router-dom.production.min.js" crossorigin></script>
+    
+    <!-- SystemJS core -->
+    <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/system.js"></script>
+    
+    <script type="text/javascript">
       // Error handler
       window.addEventListener('error', function(event) {
         console.error('[Error Event]', {
@@ -25,86 +32,107 @@
         });
       });
 
-      // Wait for SystemJS to be ready
-      function waitForSystemJS(callback, maxAttempts = 50) {
-        let attempts = 0;
-        
-        function checkSystem() {
-          attempts++;
-          debug(`Checking for SystemJS (attempt ${attempts})`);
-          
-          if (window.System && typeof window.System.config === 'function') {
-            debug('SystemJS found and ready');
-            callback();
-          } else if (attempts < maxAttempts) {
-            debug('SystemJS not ready, retrying...');
-            setTimeout(checkSystem, 100);
-          } else {
-            console.error('Failed to load SystemJS after maximum attempts');
-          }
-        }
-        
-        checkSystem();
-      }
-
       // Initialize SystemJS
       function initializeSystem() {
-        debug('Initializing SystemJS');
-        try {
-          System.config({
-            baseURL: window.__POWERED_BY_QIANKUN__ ? '/app2' : '/choicepage',
-            defaultExtension: 'js',
-            meta: {
-              '*.js': {
-                format: 'system'
+        window.debug('Initializing SystemJS');
+        
+        // Verify SystemJS is loaded
+        if (typeof System === 'undefined') {
+          throw new Error('SystemJS not loaded');
+        }
+
+        if (typeof System.config !== 'function') {
+          throw new Error('SystemJS.config not available');
+        }
+
+        // Configure SystemJS
+        System.config({
+          baseURL: window.__POWERED_BY_QIANKUN__ ? '/app2' : '/choicepage',
+          defaultExtension: 'js',
+          meta: {
+            '*.js': {
+              format: 'system',
+              babelOptions: {
+                es2015: false
               }
             }
-          });
+          },
+          packages: {
+            '/': {
+              defaultExtension: 'js'
+            }
+          }
+        });
 
-          // Map external dependencies
-          System.set('react', System.newModule(window.React));
-          System.set('react-dom', System.newModule(window.ReactDOM));
+        // Map external dependencies
+        const externals = {
+          'react': window.React,
+          'react-dom': window.ReactDOM,
+          'react-router-dom': window.ReactRouterDOM
+        };
 
-          debug('SystemJS configured successfully');
-          return true;
-        } catch (error) {
-          console.error('Failed to initialize SystemJS:', error);
-          return false;
-        }
+        Object.entries(externals).forEach(([name, module]) => {
+          if (!module) {
+            console.warn(`External dependency ${name} not found`);
+            return;
+          }
+          System.set(name, System.newModule(module));
+        });
+
+        window.debug('SystemJS initialized successfully');
+        return true;
       }
 
       // Load the application
       function loadApplication() {
         if (!window.__POWERED_BY_QIANKUN__) {
-          debug('Loading application in standalone mode');
+          window.debug('Loading application in standalone mode');
           const mainScript = '/choicepage/assets/main.js';
-          debug('Attempting to load:', mainScript);
           
-          fetch(mainScript, { method: 'HEAD' })
-            .then(response => {
-              if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-              debug('Main script exists, proceeding with import');
-              return System.import(mainScript);
-            })
-            .then(() => {
-              debug('Application loaded successfully');
-            })
-            .catch(error => {
-              console.error('Failed to load application:', error);
-            });
+          // First verify the script exists
+          fetch(mainScript, { 
+            method: 'HEAD',
+            headers: {
+              'Accept': 'application/javascript'
+            }
+          })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            window.debug('Main script verified, proceeding with import');
+            return System.import(mainScript);
+          })
+          .then(() => {
+            window.debug('Application loaded successfully');
+          })
+          .catch(error => {
+            console.error('Failed to load application:', error);
+            // Try to provide more detailed error information
+            if (error.stack) {
+              console.error('Error stack:', error.stack);
+            }
+          });
         } else {
-          debug('Running in Qiankun mode');
+          window.debug('Running in Qiankun mode');
         }
       }
 
-      // Start initialization when DOM is ready
-      document.addEventListener('DOMContentLoaded', function() {
-        debug('DOM Content Loaded');
-        waitForSystemJS(() => {
+      // Main initialization
+      function initialize() {
+        try {
           if (initializeSystem()) {
             loadApplication();
           }
-        });
+        } catch (error) {
+          console.error('Initialization failed:', error);
+        }
+      }
+
+      // Wait for all scripts to load
+      window.addEventListener('load', function() {
+        window.debug('Window load event fired');
+        setTimeout(initialize, 100); // Small delay to ensure everything is ready
       });
     </script>
   </head>
