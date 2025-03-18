@@ -4,11 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "cross-env VITE_QIANKUN=false vite",
-    "dev:standalone": "cross-env VITE_QIANKUN=false vite",
-    "build": "vite build",
-    "build:qiankun": "vite build --mode qiankun",
-    "lint": "eslint .",
+    "dev": "vite",
+    "dev:qiankun": "cross-env VITE_QIANKUN=true vite --mode qiankun",
+    "build": "cross-env VITE_QIANKUN=true vite build --mode qiankun",
     "preview": "vite preview",
     "serve": "node server.js"
   },
