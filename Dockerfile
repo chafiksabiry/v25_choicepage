@@ -1,58 +1,39 @@
 # Use a lightweight Node.js base image
 FROM node:18-alpine AS build
 
-# Set the working directory
 WORKDIR /app
 
-# Set environment variables
-ENV VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRyc3Nwa213dHJydW9xZXF4amNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzczMTczNTEsImV4cCI6MjA1Mjg5MzM1MX0.Lp1H4KOBEzYF1yN3B9lOlsQcBgwFVdRc44vgJrZJe7g
-ENV VITE_SUPABASE_URL=https://trsspkmwtrruoqeqxjcf.supabase.co
-# Don't set NODE_ENV=production during build to ensure dev dependencies are installed
-
-# Copy package.json and package-lock.json to install dependencies
+# Install dependencies first for better caching
 COPY package*.json ./
+RUN npm install
 
-# Install ALL dependencies including dev dependencies
-RUN npm ci
-
-# Copy the source code
+# Copy source files
 COPY . .
 
-# Build the app
+# Set NODE_ENV for proper dependency resolution
+ENV NODE_ENV=production
+
+# Build the application
 RUN npm run build
 
-# Verify the build output
-RUN ls -la dist/
-RUN cat dist/index.html | head -20
-RUN file dist/index.js || echo "index.js not found or not accessible"
-
-# Create a smaller production image
+# Production image
 FROM node:18-alpine AS production
-
-# Set the working directory
 WORKDIR /app
 
-# Set environment variables
-ENV NODE_ENV=production
-ENV PORT=5173
-
-# Copy package files for production dependencies only
+# Install production dependencies
 COPY package*.json ./
+COPY server.js ./
+RUN npm install express cors compression
 
-# Install only production dependencies
-RUN npm ci --omit=dev
-
-# Copy the server.js file and the built app from the build stage
-COPY --from=build /app/server.js ./
+# Copy built files and ensure proper permissions
 COPY --from=build /app/dist ./dist
+RUN chown -R node:node /app \
+    && chmod -R 755 /app/dist
 
-# Verify the copied files
-RUN ls -la
-RUN ls -la dist/
-RUN file dist/index.js || echo "index.js not found or not accessible"
+# Switch to non-root user
+USER node
 
-# Expose the port for the Express server
 EXPOSE 5173
 
-# Command to run the Express server
+# Use our custom Express server
 CMD ["node", "server.js"]
