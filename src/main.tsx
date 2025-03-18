@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import { renderWithQiankun, qiankunWindow } from 'vite-plugin-qiankun/dist/helper';
+import 'systemjs';
 
 console.log('[App2] main.tsx is being executed');
 
