@@ -17,61 +17,97 @@ app.use(cors({
 // Enable compression
 app.use(compression());
 
-// Logging middleware
+// Logging middleware with request details
 app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} - ${req.headers['user-agent']}`);
   next();
 });
 
-// Specifically handle the index.js file for qiankun
-app.get('/choicepage/index.js', (req, res) => {
-  const filePath = path.join(__dirname, 'index.js');
+// Special handler for index.js to ensure it's always served with the correct MIME type
+app.get('*/index.js', (req, res) => {
+  const filePath = path.join(__dirname, 'dist', 'index.js');
   if (fs.existsSync(filePath)) {
-    res.setHeader('Content-Type', 'application/javascript; charset=UTF-8');
+    res.set({
+      'Content-Type': 'text/javascript; charset=utf-8',
+      'Cache-Control': 'no-cache',
+      'X-Content-Type-Options': 'nosniff'
+    });
     fs.createReadStream(filePath).pipe(res);
   } else {
-    res.status(404).send('JavaScript file not found');
+    // Check the root directory as well
+    const rootFilePath = path.join(__dirname, 'index.js');
+    if (fs.existsSync(rootFilePath)) {
+      res.set({
+        'Content-Type': 'text/javascript; charset=utf-8',
+        'Cache-Control': 'no-cache',
+        'X-Content-Type-Options': 'nosniff'
+      });
+      fs.createReadStream(rootFilePath).pipe(res);
+    } else {
+      res.status(404).send('JavaScript file not found');
+    }
   }
 });
 
-// Set proper MIME types for all routes
+// MIME type middleware - add this before static file handling
 app.use((req, res, next) => {
-  // Handle all JavaScript file extensions
-  if (req.url.match(/\.(js|mjs)$/)) {
-    res.setHeader('Content-Type', 'application/javascript; charset=UTF-8');
-  } else if (req.url.endsWith('.css')) {
-    res.setHeader('Content-Type', 'text/css; charset=UTF-8');
-  } else if (req.url.endsWith('.json')) {
-    res.setHeader('Content-Type', 'application/json; charset=UTF-8');
+  const url = req.url.toLowerCase();
+  
+  // Set appropriate MIME types based on file extension
+  if (url.endsWith('.js')) {
+    res.set('Content-Type', 'text/javascript; charset=utf-8');
+  } else if (url.endsWith('.mjs')) {
+    res.set('Content-Type', 'text/javascript; charset=utf-8');
+  } else if (url.endsWith('.css')) {
+    res.set('Content-Type', 'text/css; charset=utf-8');
+  } else if (url.endsWith('.json')) {
+    res.set('Content-Type', 'application/json; charset=utf-8');
   }
+  
   next();
 });
 
-// Serve static files from the current directory with proper headers
+// Serve static files with proper MIME types
 const staticOptions = {
-  setHeaders: (res, filePath) => {
-    if (filePath.match(/\.(js|mjs)$/)) {
-      res.setHeader('Content-Type', 'application/javascript; charset=UTF-8');
-    } else if (filePath.endsWith('.css')) {
-      res.setHeader('Content-Type', 'text/css; charset=UTF-8');
-    } else if (filePath.endsWith('.json')) {
-      res.setHeader('Content-Type', 'application/json; charset=UTF-8');
+  setHeaders: (res, filepath) => {
+    const ext = path.extname(filepath).toLowerCase();
+    
+    if (ext === '.js' || ext === '.mjs') {
+      res.set('Content-Type', 'text/javascript; charset=utf-8');
+    } else if (ext === '.css') {
+      res.set('Content-Type', 'text/css; charset=utf-8');
+    } else if (ext === '.json') {
+      res.set('Content-Type', 'application/json; charset=utf-8');
     }
+    
+    // No caching for development
+    res.set('Cache-Control', 'no-cache');
   }
 };
 
+// Serve files from dist directory first (if it exists)
+if (fs.existsSync(path.join(__dirname, 'dist'))) {
+  app.use('/choicepage', express.static(path.join(__dirname, 'dist'), staticOptions));
+  app.use('/', express.static(path.join(__dirname, 'dist'), staticOptions));
+}
+
+// Fallback to serving from root directory
 app.use('/choicepage', express.static(__dirname, staticOptions));
 app.use('/', express.static(__dirname, staticOptions));
 
-// SPA fallback - only for non-asset requests
+// Handle all other routes - SPA fallback
 app.get('*', (req, res) => {
-  // Check if request is for a file with extension and not for an asset
-  const hasExtension = /\.\w+$/.test(req.url);
-  const isAssetRequest = /\.(js|mjs|css|png|jpg|jpeg|gif|svg|json|ico|woff|woff2|ttf|eot)$/.test(req.url);
+  const isAssetRequest = /\.(js|mjs|css|png|jpg|jpeg|gif|svg|json|ico|woff|woff2|ttf|eot)$/i.test(req.url);
   
-  if (!hasExtension || !isAssetRequest) {
-    res.sendFile(path.join(__dirname, 'index.html'));
+  if (!isAssetRequest) {
+    // For HTML requests, send the index.html file
+    const indexPath = fs.existsSync(path.join(__dirname, 'dist', 'index.html')) 
+      ? path.join(__dirname, 'dist', 'index.html')
+      : path.join(__dirname, 'index.html');
+      
+    res.sendFile(indexPath);
   } else {
+    // For asset requests that weren't found by the static middleware
     res.status(404).send('Not found');
   }
 });

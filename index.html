@@ -6,40 +6,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Vite + React + TS</title>
-    <!-- Load React and ReactDOM from CDN for development and to avoid loading conflicts -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <!-- SystemJS for dynamic module loading -->
-    <script src="https://cdn.jsdelivr.net/npm/systemjs@6.12.1/dist/system.js"></script>
     
-    <!-- Import map for better module resolution -->
-    <script type="systemjs-importmap">
-      {
-        "imports": {
-          "react": "https://unpkg.com/react@18/umd/react.development.js",
-          "react-dom": "https://unpkg.com/react-dom@18/umd/react-dom.development.js"
-        }
-      }
-    </script>
+    <!-- React dependencies must load before the app -->
+    <script crossorigin src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
   </head>
   <body>
     <div id="root"></div>
-    <!-- Load main script with proper type attribute -->
+    
+    <!-- In development mode, use the module script -->
     <script type="module" src="/src/main.tsx"></script>
     
-    <!-- Fallback script for production builds -->
+    <!-- For production/qiankun mode -->
     <script>
-      // Check if running in production and manually load the bundled script
-      if (window.location.hostname !== 'localhost') {
-        try {
-          // Create a script element with the right type
+      // Only load the bundle in production or if we're in a qiankun context
+      if (window.location.hostname !== 'localhost' || window.__POWERED_BY_QIANKUN__) {
+        setTimeout(() => {
           const script = document.createElement('script');
           script.src = '/choicepage/index.js';
-          script.type = 'application/javascript';
+          script.type = 'text/javascript';
           document.body.appendChild(script);
-        } catch (e) {
-          console.error('Failed to load app:', e);
-        }
+        }, 100); // Small delay to ensure React is loaded
       }
     </script>
   </body>
