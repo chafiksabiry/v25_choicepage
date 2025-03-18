@@ -12,135 +12,77 @@
       window.debug('Starting application load');
     </script>
 
-    <!-- Load dependencies in order -->
+    <!-- Load React dependencies -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-router-dom@6/dist/umd/react-router-dom.production.min.js" crossorigin></script>
-    
-    <!-- SystemJS Core -->
-    <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/system.min.js"></script>
-
-    <script type="text/javascript">
-      // Initialize SystemJS configuration after core is loaded
-      function initializeSystemJS() {
-        return new Promise((resolve, reject) => {
-          window.debug('Waiting for SystemJS to be available');
-          
-          // Check if SystemJS is available
-          if (typeof System === 'undefined') {
-            reject(new Error('SystemJS not loaded'));
-            return;
-          }
-
-          window.debug('SystemJS detected, loading extras');
-
-          // Load SystemJS extras
-          Promise.all([
-            loadScript('https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/extras/amd.min.js'),
-            loadScript('https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/extras/named-register.min.js')
-          ]).then(() => {
-            window.debug('SystemJS extras loaded, configuring');
-            
-            // Configure SystemJS
-            System.config({
-              baseURL: '/choicepage',
-              defaultExtension: 'js',
-              meta: {
-                '*.js': {
-                  format: 'system'
-                }
-              },
-              map: {
-                'react': 'https://unpkg.com/react@18/umd/react.production.min.js',
-                'react-dom': 'https://unpkg.com/react-dom@18/umd/react-dom.production.min.js',
-                'react-router-dom': 'https://unpkg.com/react-router-dom@6/dist/umd/react-router-dom.production.min.js'
-              }
-            });
-
-            window.debug('SystemJS configuration complete');
-            resolve();
-          }).catch(reject);
-        });
-      }
-
-      // Helper function to load scripts
-      function loadScript(src) {
-        return new Promise((resolve, reject) => {
-          const script = document.createElement('script');
-          script.src = src;
-          script.crossOrigin = 'anonymous';
-          script.onload = () => {
-            window.debug(`Loaded script: ${src}`);
-            resolve();
-          };
-          script.onerror = () => reject(new Error(`Failed to load script: ${src}`));
-          document.head.appendChild(script);
-        });
-      }
-
-      // Error handler
-      window.addEventListener('error', function(event) {
-        console.error('[Error Event]', {
-          message: event.message,
-          filename: event.filename,
-          lineno: event.lineno,
-          colno: event.colno,
-          error: event.error
-        });
-      });
-
-      // Load the application
-      async function loadApplication() {
-        try {
-          await initializeSystemJS();
-          
-          if (!window.__POWERED_BY_QIANKUN__) {
-            window.debug('Loading application in standalone mode');
-            const mainScript = '/choicepage/assets/main.js';
-            
-            window.debug('Checking main script availability');
-            const response = await fetch(mainScript, { 
-              method: 'HEAD',
-              headers: {
-                'Accept': 'application/javascript'
-              }
-            });
-
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            window.debug('Main script verified, proceeding with import');
-            const module = await System.import(mainScript);
-            window.debug('Module loaded:', module);
-
-            if (typeof module.render === 'function') {
-              window.debug('Calling render function');
-              module.render({});
-            } else {
-              console.error('No render function found in module:', module);
-            }
-          } else {
-            window.debug('Running in Qiankun mode');
-          }
-        } catch (error) {
-          console.error('Failed to load application:', error);
-          if (error.stack) {
-            console.error('Error stack:', error.stack);
-          }
-        }
-      }
-
-      // Wait for all scripts to load
-      window.addEventListener('load', function() {
-        window.debug('Window load event fired');
-        loadApplication().catch(error => {
-          console.error('Failed to initialize application:', error);
-        });
-      });
-    </script>
   </head>
   <body>
     <div id="root"></div>
+    
+    <!-- Load application script -->
+    <script>
+      window.addEventListener('DOMContentLoaded', function() {
+        window.debug('DOM Content Loaded, setting up app');
+        
+        // Error handler
+        window.addEventListener('error', function(event) {
+          console.error('[Error Event]', {
+            message: event.message,
+            filename: event.filename,
+            lineno: event.lineno,
+            colno: event.colno,
+            error: event.error
+          });
+        });
+
+        // Create script element for the main application bundle
+        function loadApp() {
+          window.debug('Loading main application script');
+          
+          const script = document.createElement('script');
+          script.src = '/choicepage/assets/main.js';
+          script.type = 'text/javascript';
+          
+          script.onload = function() {
+            window.debug('Main script loaded successfully');
+            // If the app exports a global render function, call it
+            if (typeof window.render === 'function') {
+              window.debug('Calling render function');
+              window.render({});
+            } else {
+              console.warn('No global render function found');
+            }
+          };
+          
+          script.onerror = function(error) {
+            console.error('Failed to load main script:', error);
+            
+            // Try alternative path as fallback
+            window.debug('Trying alternative path');
+            const fallbackScript = document.createElement('script');
+            fallbackScript.src = '/assets/main.js';
+            fallbackScript.type = 'text/javascript';
+            
+            fallbackScript.onload = function() {
+              window.debug('Fallback script loaded successfully');
+              if (typeof window.render === 'function') {
+                window.render({});
+              }
+            };
+            
+            fallbackScript.onerror = function() {
+              console.error('Both main script loading attempts failed');
+            };
+            
+            document.body.appendChild(fallbackScript);
+          };
+          
+          document.body.appendChild(script);
+        }
+        
+        loadApp();
+      });
+    </script>
   </body>
 </html>

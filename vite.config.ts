@@ -59,7 +59,8 @@ export default defineConfig(({ mode }) => {
       },
       rollupOptions: {
         output: {
-          format: 'umd',
+          format: 'iife',
+          name: 'choicePageApp',
           entryFileNames: 'assets/[name].js',
           chunkFileNames: 'assets/[name].[hash].js',
           assetFileNames: 'assets/[name].[ext]',
@@ -67,7 +68,8 @@ export default defineConfig(({ mode }) => {
             'react': 'React',
             'react-dom': 'ReactDOM',
             'react-router-dom': 'ReactRouterDOM'
-          }
+          },
+          intro: 'window.choicePageApp = window.choicePageApp || {};'
         },
         external: ['react', 'react-dom', 'react-router-dom']
       }

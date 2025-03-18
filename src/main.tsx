@@ -61,7 +61,11 @@ const render = (props: any = {}) => {
   }
 };
 
-// Export for SystemJS
+// Export render function to global window object
+// This makes it accessible from index.html
+(window as any).render = render;
+
+// Export for module systems
 export { render };
 
 if (!qiankunWindow.__POWERED_BY_QIANKUN__) {
