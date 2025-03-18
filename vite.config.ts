@@ -59,7 +59,7 @@ export default defineConfig(({ mode }) => {
       },
       rollupOptions: {
         output: {
-          format: 'system',
+          format: 'umd',
           entryFileNames: 'assets/[name].js',
           chunkFileNames: 'assets/[name].[hash].js',
           assetFileNames: 'assets/[name].[ext]',
