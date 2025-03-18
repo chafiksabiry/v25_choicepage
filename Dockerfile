@@ -4,7 +4,7 @@ FROM node:18-alpine AS build
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci --include=dev
+RUN npm install
 
 COPY . . 
 RUN npm run build  # This should compile `main.tsx` into `dist/`
@@ -13,13 +13,12 @@ RUN npm run build  # This should compile `main.tsx` into `dist/`
 FROM node:18-alpine AS production
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm ci --omit=dev
+# Install serve globally
+RUN npm install -g serve
 
-COPY --from=build /app/dist ./dist  
-COPY server.js ./
+COPY --from=build /app/dist ./dist
 
 EXPOSE 5173
 
-# Use the custom server.js instead of the generic serve command
-CMD ["node", "server.js"]
+# Serve the static files from dist directory
+CMD ["serve", "-s", "dist", "-l", "5173"]
