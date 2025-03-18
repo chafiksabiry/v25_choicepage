@@ -1,88 +1,15 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="./vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Choice Page</title>
+    <title>Vite + React + TS</title>
     
-    <!-- Debug logging setup -->
-    <script type="text/javascript">
-      window.debug = (...args) => console.log('[Debug]', ...args);
-      window.debug('Starting application load');
-    </script>
-
-    <!-- Load React dependencies -->
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-router-dom@6/dist/umd/react-router-dom.production.min.js" crossorigin></script>
   </head>
   <body>
     <div id="root"></div>
-    
-    <!-- Load application script -->
-    <script>
-      window.addEventListener('DOMContentLoaded', function() {
-        window.debug('DOM Content Loaded, setting up app');
-        
-        // Error handler
-        window.addEventListener('error', function(event) {
-          console.error('[Error Event]', {
-            message: event.message,
-            filename: event.filename,
-            lineno: event.lineno,
-            colno: event.colno,
-            error: event.error
-          });
-        });
-
-        // Create script element for the main application bundle
-        function loadApp() {
-          window.debug('Loading main application script');
-          
-          const script = document.createElement('script');
-          script.src = '/choicepage/assets/main.js';
-          script.type = 'text/javascript';
-          
-          script.onload = function() {
-            window.debug('Main script loaded successfully');
-            // If the app exports a global render function, call it
-            if (typeof window.render === 'function') {
-              window.debug('Calling render function');
-              window.render({});
-            } else {
-              console.warn('No global render function found');
-            }
-          };
-          
-          script.onerror = function(error) {
-            console.error('Failed to load main script:', error);
-            
-            // Try alternative path as fallback
-            window.debug('Trying alternative path');
-            const fallbackScript = document.createElement('script');
-            fallbackScript.src = '/assets/main.js';
-            fallbackScript.type = 'text/javascript';
-            
-            fallbackScript.onload = function() {
-              window.debug('Fallback script loaded successfully');
-              if (typeof window.render === 'function') {
-                window.render({});
-              }
-            };
-            
-            fallbackScript.onerror = function() {
-              console.error('Both main script loading attempts failed');
-            };
-            
-            document.body.appendChild(fallbackScript);
-          };
-          
-          document.body.appendChild(script);
-        }
-        
-        loadApp();
-      });
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/systemjs@6.12.1/dist/system.js" defer></script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

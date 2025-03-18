@@ -1,44 +1,27 @@
-# Build stage
-FROM node:18-alpine AS builder
-
-WORKDIR /app
-
-# Copy package files
-COPY package*.json ./
-
-# Install dependencies and generate a fresh package-lock.json
-RUN npm install
-
-# Copy source code
-COPY . .
-
-# Build the application
-RUN npm run build
-
-# Production stage
+# Use a lightweight Node.js base image
 FROM node:18-alpine
 
+# Set the working directory
 WORKDIR /app
 
-# Copy package files and lock file
+# Copy package.json and package-lock.json to install dependencies
 COPY package*.json ./
-COPY --from=builder /app/package-lock.json ./
 
-# Install production dependencies
-RUN npm install --omit=dev
 
-# Copy built files from builder stage
-COPY --from=builder /app/dist ./dist
-COPY server.js .
+# Install dependencies
+RUN npm install
 
-# Set proper permissions
-RUN chown -R node:node /app
+# Copy the source code
+COPY . .
 
-# Use non-root user
-USER node
+# Build the app
+RUN npm run build
 
-# Expose port
-EXPOSE 5173
+# Install a lightweight HTTP server to serve the build
+RUN npm install -g serve
 
-# Start the server
-CMD ["node", "server.js"]
+# Expose the port for the HTTP server
+EXPOSE 5157
+
+# Command to serve the app
+CMD ["serve", "-s", "dist", "-l", "5157"]
