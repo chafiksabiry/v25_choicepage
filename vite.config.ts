@@ -18,6 +18,7 @@ const removeReactRefreshScript = () => {
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
+  const isQiankun = env.VITE_QIANKUN === 'true';
 
   return {
     base: '/choicepage/',
@@ -38,6 +39,11 @@ export default defineConfig(({ mode }) => {
       port: 5157,
       cors: true,
       hmr: false,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+        'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type, Authorization'
+      },
       fs: {
         strict: true, // Ensure static assets are correctly resolved
       },
@@ -53,13 +59,20 @@ export default defineConfig(({ mode }) => {
           chunkFileNames: 'chunk-[name].js', // Fixed name for chunks
           assetFileNames: (assetInfo) => {
             // Ensure CSS files are consistently named
-            if (assetInfo.name.endsWith('.css')) {
+            if (assetInfo.name?.endsWith('.css')) {
               return 'index.css';
             }
             return '[name].[ext]'; // Default for other asset types
           },
+          // Ensure the output is properly exposing content to global scope for qiankun
+          globals: {
+            react: 'React',
+            'react-dom': 'ReactDOM',
+          },
         },
       },
+      // Prevent minification for better debugging
+      minify: mode === 'production',
     },
     resolve: {
       alias: {
