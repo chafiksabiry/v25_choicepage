@@ -6,6 +6,8 @@
     "dev": "vite",
     "dev:qiankun": "cross-env VITE_QIANKUN=true vite --mode qiankun",
     "build": "cross-env VITE_QIANKUN=true vite build --mode qiankun",
+    "build:standalone": "vite build",
+    "build:fix-mime": "cross-env VITE_QIANKUN=true vite build --mode qiankun && node ./scripts/fix-mime-types.js",
     "preview": "vite preview",
     "serve": "node server.js"
   },

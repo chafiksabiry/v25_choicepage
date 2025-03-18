@@ -16,6 +16,21 @@ const removeReactRefreshScript = () => {
   };
 };
 
+// Plugin to set correct MIME types
+const setProperMimeTypes = () => {
+  return {
+    name: 'set-proper-mime-types',
+    configureServer(server: any) {
+      server.middlewares.use((req: any, res: any, next: any) => {
+        if (req.url.match(/\.(js|mjs)$/)) {
+          res.setHeader('Content-Type', 'application/javascript; charset=UTF-8');
+        }
+        next();
+      });
+    },
+  };
+};
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   const isQiankun = env.VITE_QIANKUN === 'true';
@@ -30,6 +45,7 @@ export default defineConfig(({ mode }) => {
         useDevMode: true,
       }),
       removeReactRefreshScript(), // Add the script removal plugin
+      setProperMimeTypes(), // Add MIME type plugin
     ],
 
     define: {
@@ -42,7 +58,8 @@ export default defineConfig(({ mode }) => {
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-        'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type, Authorization'
+        'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type, Authorization',
+        'Content-Type': 'application/javascript; charset=UTF-8',
       },
       fs: {
         strict: true, // Ensure static assets are correctly resolved
@@ -51,7 +68,12 @@ export default defineConfig(({ mode }) => {
     build: {
       target: 'esnext',
       cssCodeSplit: false,
+      outDir: 'dist',
+      assetsDir: 'assets',
+      // Generate source maps for easier debugging
+      sourcemap: mode !== 'production',
       rollupOptions: {
+        external: isQiankun ? ['react', 'react-dom'] : [],
         output: {
           format: 'umd',
           name: 'app2',
@@ -69,9 +91,11 @@ export default defineConfig(({ mode }) => {
             react: 'React',
             'react-dom': 'ReactDOM',
           },
+          // Add module type for proper loading
+          intro: 'if (typeof process === "undefined") { var process = { env: {} }; }',
         },
       },
-      // Prevent minification for better debugging
+      // Prevent minification for better debugging in non-production modes
       minify: mode === 'production',
     },
     resolve: {
@@ -80,4 +104,4 @@ export default defineConfig(({ mode }) => {
       },
     },
   };
- });
+});

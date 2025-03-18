@@ -4,15 +4,43 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Vite + React + TS</title>
     <!-- Load React and ReactDOM from CDN for development and to avoid loading conflicts -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <!-- SystemJS for dynamic module loading -->
     <script src="https://cdn.jsdelivr.net/npm/systemjs@6.12.1/dist/system.js"></script>
+    
+    <!-- Import map for better module resolution -->
+    <script type="systemjs-importmap">
+      {
+        "imports": {
+          "react": "https://unpkg.com/react@18/umd/react.development.js",
+          "react-dom": "https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+        }
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
+    <!-- Load main script with proper type attribute -->
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Fallback script for production builds -->
+    <script>
+      // Check if running in production and manually load the bundled script
+      if (window.location.hostname !== 'localhost') {
+        try {
+          // Create a script element with the right type
+          const script = document.createElement('script');
+          script.src = '/choicepage/index.js';
+          script.type = 'application/javascript';
+          document.body.appendChild(script);
+        } catch (e) {
+          console.error('Failed to load app:', e);
+        }
+      }
+    </script>
   </body>
 </html>
