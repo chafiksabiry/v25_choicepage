@@ -76,17 +76,13 @@ export default defineConfig(({ mode }) => {
       cssCodeSplit: false,
       outDir: 'dist',
       assetsDir: 'assets',
-      modulePreload: {
-        polyfill: true
-      },
+      modulePreload: false,
       rollupOptions: {
-        input: {
-          main: path.resolve(__dirname, 'index.html'),
-        },
         output: {
           format: 'es',
-          entryFileNames: 'assets/[name].js',
+          entryFileNames: 'assets/[name].[hash].js',
           chunkFileNames: 'assets/[name].[hash].js',
+          assetFileNames: 'assets/[name].[hash].[ext]',
         },
       },
     },

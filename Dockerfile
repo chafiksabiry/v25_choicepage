@@ -20,13 +20,17 @@ RUN npm run build
 FROM node:18-alpine AS production
 WORKDIR /app
 
-# Copy only necessary files
+# Install production dependencies
 COPY package*.json ./
 COPY server.js ./
-RUN npm install express cors
+RUN npm install express cors compression
 
-# Copy built files
+# Copy built files and ensure proper permissions
 COPY --from=build /app/dist ./dist
+RUN chown -R node:node /app
+
+# Switch to non-root user
+USER node
 
 EXPOSE 5173
 
