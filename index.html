@@ -5,10 +5,11 @@
     <link rel="icon" type="image/svg+xml" href="./vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Choice Page</title>
-    <!-- Load SystemJS first -->
+    <!-- Load React dependencies -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Load SystemJS -->
     <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/system.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/extras/amd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/extras/named-register.min.js"></script>
     <script type="text/javascript">
       // Debug logging
       const debug = (...args) => console.log('[Debug]', ...args);
@@ -24,28 +25,45 @@
         });
       });
 
+      // Wait for SystemJS to be ready
+      function waitForSystemJS(callback, maxAttempts = 50) {
+        let attempts = 0;
+        
+        function checkSystem() {
+          attempts++;
+          debug(`Checking for SystemJS (attempt ${attempts})`);
+          
+          if (window.System && typeof window.System.config === 'function') {
+            debug('SystemJS found and ready');
+            callback();
+          } else if (attempts < maxAttempts) {
+            debug('SystemJS not ready, retrying...');
+            setTimeout(checkSystem, 100);
+          } else {
+            console.error('Failed to load SystemJS after maximum attempts');
+          }
+        }
+        
+        checkSystem();
+      }
+
       // Initialize SystemJS
       function initializeSystem() {
         debug('Initializing SystemJS');
         try {
-          if (!window.System) {
-            throw new Error('SystemJS not found');
-          }
-
           System.config({
             baseURL: window.__POWERED_BY_QIANKUN__ ? '/app2' : '/choicepage',
             defaultExtension: 'js',
             meta: {
               '*.js': {
-                format: 'system',
-                scriptLoad: true
+                format: 'system'
               }
-            },
-            warnings: true,
-            babelOptions: {
-              modules: 'systemjs'
             }
           });
+
+          // Map external dependencies
+          System.set('react', System.newModule(window.React));
+          System.set('react-dom', System.newModule(window.ReactDOM));
 
           debug('SystemJS configured successfully');
           return true;
@@ -62,7 +80,12 @@
           const mainScript = '/choicepage/assets/main.js';
           debug('Attempting to load:', mainScript);
           
-          System.import(mainScript)
+          fetch(mainScript, { method: 'HEAD' })
+            .then(response => {
+              if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+              debug('Main script exists, proceeding with import');
+              return System.import(mainScript);
+            })
             .then(() => {
               debug('Application loaded successfully');
             })
@@ -74,12 +97,14 @@
         }
       }
 
-      // Initialize when DOM is ready
+      // Start initialization when DOM is ready
       document.addEventListener('DOMContentLoaded', function() {
         debug('DOM Content Loaded');
-        if (initializeSystem()) {
-          loadApplication();
-        }
+        waitForSystemJS(() => {
+          if (initializeSystem()) {
+            loadApplication();
+          }
+        });
       });
     </script>
   </head>

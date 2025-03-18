@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 5173;
 // Enable CORS and compression
 app.use(cors({
   origin: '*',
-  methods: ['GET', 'POST', 'OPTIONS'],
+  methods: ['GET', 'POST', 'OPTIONS', 'HEAD'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(compression());
@@ -25,35 +25,60 @@ app.use((req, res, next) => {
 const setCommonHeaders = (res) => {
   res.set({
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, HEAD',
     'Cache-Control': 'public, max-age=31536000',
     'X-Content-Type-Options': 'nosniff'
   });
+};
+
+// Function to check if file exists and get its stats
+const getFileInfo = (filePath) => {
+  try {
+    const stats = fs.statSync(filePath);
+    return { exists: true, stats };
+  } catch (err) {
+    return { exists: false, stats: null };
+  }
 };
 
 // Handle JavaScript files first
 app.get(['*.js', '*/assets/*.js', '/choicepage/*.js', '/choicepage/assets/*.js'], (req, res, next) => {
   const normalizedPath = req.path.replace(/^\/choicepage\//, '');
   const filePath = path.join(__dirname, 'dist', normalizedPath);
+  
+  console.log(`[JS Request] Processing request for: ${req.path}`);
+  console.log(`[JS Request] Normalized path: ${normalizedPath}`);
+  console.log(`[JS Request] Full file path: ${filePath}`);
 
-  console.log(`[JS Request] Attempting to serve: ${filePath}`);
-
-  if (!fs.existsSync(filePath)) {
+  const fileInfo = getFileInfo(filePath);
+  if (!fileInfo.exists) {
     console.log(`[JS Request] File not found: ${filePath}`);
     return next();
   }
 
+  console.log(`[JS Request] File found: ${filePath}`);
+  console.log(`[JS Request] File size: ${fileInfo.stats.size} bytes`);
+
   setCommonHeaders(res);
-  res.set('Content-Type', 'application/javascript; charset=utf-8');
-  
-  res.sendFile(filePath, (err) => {
-    if (err) {
-      console.error(`[JS Request] Error serving ${filePath}:`, err);
-      next(err);
-    } else {
-      console.log(`[JS Request] Successfully served: ${filePath}`);
-    }
+  res.set({
+    'Content-Type': 'application/javascript; charset=utf-8',
+    'Content-Length': fileInfo.stats.size
   });
+
+  // Handle HEAD requests
+  if (req.method === 'HEAD') {
+    console.log(`[JS Request] Responding to HEAD request for: ${filePath}`);
+    return res.end();
+  }
+
+  // Stream the file
+  const stream = fs.createReadStream(filePath);
+  stream.on('error', (err) => {
+    console.error(`[JS Request] Error streaming file ${filePath}:`, err);
+    next(err);
+  });
+
+  stream.pipe(res);
 });
 
 // Serve static files
@@ -64,7 +89,7 @@ app.use('/choicepage', express.static(path.join(__dirname, 'dist'), {
       res.set('Content-Type', 'application/javascript; charset=utf-8');
     }
   },
-  index: false // Disable automatic index.html serving
+  index: false
 }));
 
 // SPA fallback - always serve index.html for any unmatched routes
