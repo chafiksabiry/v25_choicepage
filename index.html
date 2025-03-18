@@ -17,8 +17,21 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-router-dom@6/dist/umd/react-router-dom.production.min.js" crossorigin></script>
     
-    <!-- SystemJS core -->
-    <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/system.js"></script>
+    <!-- SystemJS -->
+    <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/system.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/extras/amd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/extras/named-register.min.js"></script>
+
+    <!-- Import map for SystemJS -->
+    <script type="systemjs-importmap">
+      {
+        "imports": {
+          "react": "https://unpkg.com/react@18/umd/react.production.min.js",
+          "react-dom": "https://unpkg.com/react-dom@18/umd/react-dom.production.min.js",
+          "react-router-dom": "https://unpkg.com/react-router-dom@6/dist/umd/react-router-dom.production.min.js"
+        }
+      }
+    </script>
     
     <script type="text/javascript">
       // Error handler
@@ -31,57 +44,6 @@
           error: event.error
         });
       });
-
-      // Initialize SystemJS
-      function initializeSystem() {
-        window.debug('Initializing SystemJS');
-        
-        // Verify SystemJS is loaded
-        if (typeof System === 'undefined') {
-          throw new Error('SystemJS not loaded');
-        }
-
-        if (typeof System.config !== 'function') {
-          throw new Error('SystemJS.config not available');
-        }
-
-        // Configure SystemJS
-        System.config({
-          baseURL: window.__POWERED_BY_QIANKUN__ ? '/app2' : '/choicepage',
-          defaultExtension: 'js',
-          meta: {
-            '*.js': {
-              format: 'system',
-              babelOptions: {
-                es2015: false
-              }
-            }
-          },
-          packages: {
-            '/': {
-              defaultExtension: 'js'
-            }
-          }
-        });
-
-        // Map external dependencies
-        const externals = {
-          'react': window.React,
-          'react-dom': window.ReactDOM,
-          'react-router-dom': window.ReactRouterDOM
-        };
-
-        Object.entries(externals).forEach(([name, module]) => {
-          if (!module) {
-            console.warn(`External dependency ${name} not found`);
-            return;
-          }
-          System.set(name, System.newModule(module));
-        });
-
-        window.debug('SystemJS initialized successfully');
-        return true;
-      }
 
       // Load the application
       function loadApplication() {
@@ -108,7 +70,6 @@
           })
           .catch(error => {
             console.error('Failed to load application:', error);
-            // Try to provide more detailed error information
             if (error.stack) {
               console.error('Error stack:', error.stack);
             }
@@ -118,21 +79,10 @@
         }
       }
 
-      // Main initialization
-      function initialize() {
-        try {
-          if (initializeSystem()) {
-            loadApplication();
-          }
-        } catch (error) {
-          console.error('Initialization failed:', error);
-        }
-      }
-
       // Wait for all scripts to load
       window.addEventListener('load', function() {
         window.debug('Window load event fired');
-        setTimeout(initialize, 100); // Small delay to ensure everything is ready
+        setTimeout(loadApplication, 100); // Small delay to ensure everything is ready
       });
     </script>
   </head>

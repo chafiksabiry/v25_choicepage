@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 5173;
 app.use(cors({
   origin: '*',
   methods: ['GET', 'POST', 'OPTIONS', 'HEAD'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
 }));
 app.use(compression());
 
@@ -42,7 +42,7 @@ const getFileInfo = (filePath) => {
   }
 };
 
-// Handle JavaScript files first
+// Handle JavaScript files first with proper MIME type
 app.get(['*.js', '*/assets/*.js', '/choicepage/*.js', '/choicepage/assets/*.js'], (req, res, next) => {
   const normalizedPath = req.path.replace(/^\/choicepage\//, '');
   const filePath = path.join(__dirname, 'dist', normalizedPath);
@@ -60,6 +60,7 @@ app.get(['*.js', '*/assets/*.js', '/choicepage/*.js', '/choicepage/assets/*.js']
   console.log(`[JS Request] File found: ${filePath}`);
   console.log(`[JS Request] File size: ${fileInfo.stats.size} bytes`);
 
+  // Set proper headers for JavaScript files
   setCommonHeaders(res);
   res.set({
     'Content-Type': 'application/javascript; charset=utf-8',
@@ -82,7 +83,7 @@ app.get(['*.js', '*/assets/*.js', '/choicepage/*.js', '/choicepage/assets/*.js']
   stream.pipe(res);
 });
 
-// Serve static files
+// Serve static files with proper MIME types
 app.use('/choicepage', express.static(path.join(__dirname, 'dist'), {
   setHeaders: (res, filePath) => {
     setCommonHeaders(res);
@@ -102,6 +103,7 @@ app.get('*', (req, res) => {
   }
 
   console.log(`[Fallback] Serving index.html for: ${req.path}`);
+  res.set('Content-Type', 'text/html; charset=utf-8');
   res.sendFile(indexPath, (err) => {
     if (err) {
       console.error('[Fallback] Error serving index.html:', err);
