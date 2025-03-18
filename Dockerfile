@@ -7,7 +7,7 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . . 
-RUN npm run build
+RUN npm run build  # This should compile `main.tsx` into `dist/`
 
 # Production image
 FROM node:18-alpine AS production
@@ -16,7 +16,9 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci --omit=dev
 
-COPY --from=build /app/dist ./dist
+COPY --from=build /app/dist ./dist  
 
 EXPOSE 5173
-CMD ["node", "server.js"]
+
+# ✅ Run the frontend build directly using Vite
+CMD ["npx", "serve", "-l", "5173", "-s", "dist"]
