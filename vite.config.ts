@@ -52,9 +52,7 @@ export default defineConfig(({ mode }) => {
   return {
     base: isQiankun ? '/app2/' : isDevelopment ? '/' : '/choicepage/',
     plugins: [
-      react({
-        jsxRuntime: 'classic',
-      }),
+      react(),
       qiankun('app2', {
         useDevMode: true,
       }),
@@ -78,12 +76,17 @@ export default defineConfig(({ mode }) => {
       cssCodeSplit: false,
       outDir: 'dist',
       assetsDir: 'assets',
+      modulePreload: {
+        polyfill: true
+      },
       rollupOptions: {
+        input: {
+          main: path.resolve(__dirname, 'index.html'),
+        },
         output: {
-          format: 'umd',
+          format: 'es',
           entryFileNames: 'assets/[name].js',
-          chunkFileNames: 'assets/[name].js',
-          assetFileNames: 'assets/[name].[ext]',
+          chunkFileNames: 'assets/[name].[hash].js',
         },
       },
     },

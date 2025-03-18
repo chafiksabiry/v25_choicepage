@@ -7,15 +7,17 @@ import { renderWithQiankun, qiankunWindow } from 'vite-plugin-qiankun/dist/helpe
 
 console.log('[App2] main.tsx is being executed');
 
-// Store the root instance for unmounting
 let root: ReturnType<typeof createRoot> | null = null;
 
-// Rendering function
-function render(props: any = {}) {
-  const { container } = props;
-  console.log('[App2] Rendering with container:', container);
+// Export lifecycle functions first
+export async function bootstrap() {
+  console.log('[App2] bootstrapped');
+}
 
-  const rootElement = container
+export async function mount(props: any) {
+  console.log('[App2] mounted', props);
+  const { container } = props;
+  const rootElement = container 
     ? container.querySelector('#root')
     : document.querySelector('#root');
 
@@ -24,11 +26,7 @@ function render(props: any = {}) {
     return;
   }
 
-  if (!root) {
-    console.log('[App2] Creating new root instance');
-    root = createRoot(rootElement);
-  }
-
+  root = createRoot(rootElement);
   root.render(
     <BrowserRouter basename={window.__POWERED_BY_QIANKUN__ ? '/app2' : '/'}>
       <App />
@@ -36,36 +34,36 @@ function render(props: any = {}) {
   );
 }
 
-if (!qiankunWindow.__POWERED_BY_QIANKUN__) {
-  console.log('[App2] Running in standalone mode');
-  render({});
-} else {
-  console.log('[App2] Running inside Qiankun');
-  renderWithQiankun({
-    mount: mount,
-    bootstrap: bootstrap,
-    unmount: unmount,
-    update: update,
-  });
-}
-
-export async function bootstrap() {
-  console.log('[App2] bootstrapped');
-}
-
-export async function mount(props: any) {
-  console.log('[App2] mounted', props);
-  render(props);
-}
-
-export async function unmount(props: any) {
-  console.log('[App2] unmount', props);
-  if (root) {
-    root.unmount();
-    root = null;
-  }
+export async function unmount() {
+  console.log('[App2] unmount');
+  root?.unmount();
+  root = null;
 }
 
 export async function update(props: any) {
   console.log('[App2] update', props);
+}
+
+// Initialize the application
+const render = (props: any = {}) => {
+  if (!qiankunWindow.__POWERED_BY_QIANKUN__) {
+    const rootElement = document.querySelector('#root');
+    if (!rootElement) {
+      console.error('[App2] Root element not found in standalone mode');
+      return;
+    }
+    root = createRoot(rootElement);
+    root.render(
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    );
+  }
+};
+
+if (!qiankunWindow.__POWERED_BY_QIANKUN__) {
+  console.log('[App2] Running in standalone mode');
+  render({});
+} else {
+  console.log('[App2] Running in qiankun mode');
 }

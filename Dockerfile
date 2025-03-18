@@ -13,12 +13,13 @@ RUN npm run build
 FROM node:18-alpine AS production
 WORKDIR /app
 
-# Install serve globally
-RUN npm install -g serve@14.2.1
+COPY package*.json ./
+COPY server.js ./
+RUN npm install express cors
 
 COPY --from=build /app/dist ./dist
 
 EXPOSE 5173
 
-# Serve the static files from dist directory with proper headers
-CMD ["serve", "-s", "dist", "-l", "5173", "--cors"]
+# Use our custom Express server
+CMD ["node", "server.js"]
