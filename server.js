@@ -1,7 +1,8 @@
 const express = require('express');
-const path = require('path');
 const cors = require('cors');
+const path = require('path');
 const compression = require('compression');
+const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 5173;
@@ -10,44 +11,37 @@ const PORT = process.env.PORT || 5173;
 app.use(cors());
 app.use(compression());
 
-// Handle asset routes first
-app.get('/app2/assets/*', (req, res, next) => {
-  const filePath = path.join(__dirname, 'dist', req.path.replace('/app2/', ''));
-  if (path.extname(filePath) === '.js') {
-    res.set('Content-Type', 'application/javascript; charset=utf-8');
-  }
-  res.sendFile(filePath, (err) => {
-    if (err) next();
-  });
+// Debug middleware to log requests
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
 });
 
-app.get('/choicepage/assets/*', (req, res, next) => {
-  const filePath = path.join(__dirname, 'dist', req.path.replace('/choicepage/', ''));
-  if (path.extname(filePath) === '.js') {
+// Handle JavaScript files specifically
+app.get(['*/assets/*.js', '*.js'], (req, res, next) => {
+  const filePath = path.join(__dirname, 'dist', req.path.replace(/^\/choicepage\//, ''));
+  
+  if (fs.existsSync(filePath)) {
+    console.log(`Serving JavaScript file: ${filePath}`);
     res.set('Content-Type', 'application/javascript; charset=utf-8');
+    res.sendFile(filePath);
+  } else {
+    console.log(`File not found: ${filePath}`);
+    next();
   }
-  res.sendFile(filePath, (err) => {
-    if (err) next();
-  });
 });
 
-// Serve static files with proper MIME types
+// Serve static files from the dist directory
 app.use(express.static(path.join(__dirname, 'dist'), {
   setHeaders: (res, filePath) => {
     if (filePath.endsWith('.js')) {
       res.set('Content-Type', 'application/javascript; charset=utf-8');
-    } else if (filePath.endsWith('.css')) {
-      res.set('Content-Type', 'text/css; charset=utf-8');
-    } else if (filePath.endsWith('.html')) {
-      res.set('Content-Type', 'text/html; charset=utf-8');
     }
-  },
-  index: false // Don't automatically serve index.html for directories
+  }
 }));
 
-// Handle SPA routing - must be after static file handling
+// SPA fallback
 app.get('*', (req, res) => {
-  res.set('Content-Type', 'text/html; charset=utf-8');
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 

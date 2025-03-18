@@ -1,39 +1,44 @@
-# Use a lightweight Node.js base image
-FROM node:18-alpine AS build
+# Build stage
+FROM node:18-alpine as builder
 
 WORKDIR /app
 
-# Install dependencies first for better caching
+# Copy package files
 COPY package*.json ./
+
+# Install dependencies including devDependencies
 RUN npm install
 
 # Copy source files
 COPY . .
 
-# Set NODE_ENV for proper dependency resolution
-ENV NODE_ENV=production
-
 # Build the application
+ENV NODE_ENV=production
 RUN npm run build
 
-# Production image
-FROM node:18-alpine AS production
+# Production stage
+FROM node:18-alpine
+
 WORKDIR /app
 
 # Install production dependencies
 COPY package*.json ./
-COPY server.js ./
-RUN npm install express cors compression
+RUN npm install --production && \
+    npm install express cors compression
 
-# Copy built files and ensure proper permissions
-COPY --from=build /app/dist ./dist
-RUN chown -R node:node /app \
-    && chmod -R 755 /app/dist
+# Copy built files from builder stage
+COPY --from=builder /app/dist ./dist
+COPY server.js .
+
+# Set proper permissions
+RUN chown -R node:node /app && \
+    chmod -R 755 /app/dist
 
 # Switch to non-root user
 USER node
 
+# Expose port
 EXPOSE 5173
 
-# Use our custom Express server
+# Start the server
 CMD ["node", "server.js"]

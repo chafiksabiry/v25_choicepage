@@ -23,21 +23,19 @@ const fixModuleScriptMimeType = () => {
     transformIndexHtml(html: string) {
       const $ = cheerio.load(html);
       
-      // Ensure all scripts have proper type attributes
+      // Update all script tags
       $('script').each((_, el) => {
         const script = $(el);
-        const content = script.html() || '';
-        
-        // For dynamic imports, ensure type="module"
-        if (content.includes('import(') && !script.attr('type')) {
-          script.attr('type', 'module');
-        }
-        
-        // Add crossorigin attribute to help with CORS
-        if (!script.attr('crossorigin')) {
+        // Don't set type="module" for SystemJS builds
+        if (!script.attr('src')?.includes('system.js')) {
           script.attr('crossorigin', 'anonymous');
         }
       });
+      
+      // Add SystemJS if not present
+      if (!$('script[src*="system.js"]').length) {
+        $('head').prepend('<script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/system.min.js"></script>');
+      }
       
       return $.html();
     },
@@ -50,11 +48,11 @@ export default defineConfig(({ mode }) => {
   const isQiankun = mode === 'qiankun';
 
   return {
-    base: isQiankun ? '/app2/' : isDevelopment ? '/' : '/choicepage/',
+    base: isDevelopment ? '/' : 'https://v25.harx.ai/app2/',
     plugins: [
       react(),
       qiankun('app2', {
-        useDevMode: true,
+        useDevMode: isDevelopment,
       }),
       removeReactRefreshScript(),
       fixModuleScriptMimeType(),
@@ -77,23 +75,29 @@ export default defineConfig(({ mode }) => {
       outDir: 'dist',
       assetsDir: 'assets',
       modulePreload: false,
+      sourcemap: true,
       manifest: true,
       rollupOptions: {
         input: {
           main: path.resolve(__dirname, 'index.html'),
         },
         output: {
-          format: 'systemjs',
+          format: 'system',
           entryFileNames: 'assets/[name].[hash].js',
           chunkFileNames: 'assets/[name].[hash].js',
           assetFileNames: 'assets/[name].[hash].[ext]',
+          inlineDynamicImports: false,
         },
+        external: ['react', 'react-dom', 'react-router-dom'],
       },
     },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, 'src'),
       },
+    },
+    optimizeDeps: {
+      include: ['react', 'react-dom'],
     },
   };
 });
