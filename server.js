@@ -1,24 +1,34 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+const compression = require('compression');
 
 const app = express();
 const PORT = process.env.PORT || 5173;
 
-// Enable CORS
+// Enable CORS and compression
 app.use(cors());
+app.use(compression());
 
-// Set proper MIME types
-app.use((req, res, next) => {
-  const file = req.url;
-  if (file.endsWith('.js')) {
+// Handle asset routes first
+app.get('/app2/assets/*', (req, res, next) => {
+  const filePath = path.join(__dirname, 'dist', req.path.replace('/app2/', ''));
+  if (path.extname(filePath) === '.js') {
     res.set('Content-Type', 'application/javascript; charset=utf-8');
-  } else if (file.endsWith('.css')) {
-    res.set('Content-Type', 'text/css; charset=utf-8');
-  } else if (file.endsWith('.html')) {
-    res.set('Content-Type', 'text/html; charset=utf-8');
   }
-  next();
+  res.sendFile(filePath, (err) => {
+    if (err) next();
+  });
+});
+
+app.get('/choicepage/assets/*', (req, res, next) => {
+  const filePath = path.join(__dirname, 'dist', req.path.replace('/choicepage/', ''));
+  if (path.extname(filePath) === '.js') {
+    res.set('Content-Type', 'application/javascript; charset=utf-8');
+  }
+  res.sendFile(filePath, (err) => {
+    if (err) next();
+  });
 });
 
 // Serve static files with proper MIME types

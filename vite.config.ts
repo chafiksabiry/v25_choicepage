@@ -77,9 +77,13 @@ export default defineConfig(({ mode }) => {
       outDir: 'dist',
       assetsDir: 'assets',
       modulePreload: false,
+      manifest: true,
       rollupOptions: {
+        input: {
+          main: path.resolve(__dirname, 'index.html'),
+        },
         output: {
-          format: 'es',
+          format: 'systemjs',
           entryFileNames: 'assets/[name].[hash].js',
           chunkFileNames: 'assets/[name].[hash].js',
           assetFileNames: 'assets/[name].[hash].[ext]',

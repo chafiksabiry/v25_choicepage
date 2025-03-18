@@ -27,7 +27,8 @@ RUN npm install express cors compression
 
 # Copy built files and ensure proper permissions
 COPY --from=build /app/dist ./dist
-RUN chown -R node:node /app
+RUN chown -R node:node /app \
+    && chmod -R 755 /app/dist
 
 # Switch to non-root user
 USER node
