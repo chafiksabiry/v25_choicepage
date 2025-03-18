@@ -1,5 +1,4 @@
 import { defineConfig, loadEnv } from 'vite';
-import type { RollupOptions } from 'rollup';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import qiankun from 'vite-plugin-qiankun';
@@ -37,7 +36,7 @@ export default defineConfig(({ mode }) => {
   const isQiankun = env.VITE_QIANKUN === 'true';
 
   return {
-    base: '/choicepage/',
+    base: 'https://choicepage.harx.ai/',
     plugins: [
       react({
         jsxRuntime: 'classic',
@@ -89,12 +88,12 @@ export default defineConfig(({ mode }) => {
           },
           // Ensure the output is properly exposing content to global scope for qiankun
           globals: {
-            'react': 'React',
+            react: 'React',
             'react-dom': 'ReactDOM',
           },
           // Add module type for proper loading
           intro: 'if (typeof process === "undefined") { var process = { env: {} }; }',
-        } as RollupOptions['output'],
+        },
       },
       // Prevent minification for better debugging in non-production modes
       minify: mode === 'production',
