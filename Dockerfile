@@ -1,19 +1,18 @@
 # Build stage
-FROM node:18-alpine as builder
+FROM node:18-alpine AS builder
 
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies including devDependencies
+# Install dependencies
 RUN npm install
 
-# Copy source files
+# Copy source code
 COPY . .
 
 # Build the application
-ENV NODE_ENV=production
 RUN npm run build
 
 # Production stage
@@ -21,21 +20,15 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Install production dependencies
+# Copy package files for production
 COPY package*.json ./
-RUN npm install --production && \
-    npm install express cors compression
+
+# Install production dependencies only
+RUN npm ci --only=production
 
 # Copy built files from builder stage
 COPY --from=builder /app/dist ./dist
 COPY server.js .
-
-# Set proper permissions
-RUN chown -R node:node /app && \
-    chmod -R 755 /app/dist
-
-# Switch to non-root user
-USER node
 
 # Expose port
 EXPOSE 5173

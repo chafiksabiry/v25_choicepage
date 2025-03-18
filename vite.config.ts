@@ -48,7 +48,7 @@ export default defineConfig(({ mode }) => {
   const isQiankun = mode === 'qiankun';
 
   return {
-    base: isDevelopment ? '/' : 'https://v25.harx.ai/app2/',
+    base: isDevelopment ? '/' : '/choicepage/',
     plugins: [
       react(),
       qiankun('app2', {
