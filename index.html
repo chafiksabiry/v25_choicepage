@@ -5,7 +5,9 @@
     <link rel="icon" type="image/svg+xml" href="./vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Choice Page</title>
-    <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/system.min.js"></script>
+    <!-- Load SystemJS first -->
+    <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/system.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/extras/named-register.js"></script>
     <script type="text/javascript">
       window.addEventListener('error', function(event) {
         console.error('Script loading error:', event);
@@ -13,15 +15,21 @@
           console.error('Failed to load script:', event.target.src);
         }
       });
-      
-      // Configure SystemJS
-      System.config({
-        baseURL: window.__POWERED_BY_QIANKUN__ ? '/app2' : '/',
-        defaultExtension: 'js',
-        meta: {
-          '*.js': {
-            format: 'system'
-          }
+
+      // Wait for SystemJS to be ready
+      window.addEventListener('load', function() {
+        if (window.System && typeof window.System.config === 'function') {
+          System.config({
+            baseURL: window.__POWERED_BY_QIANKUN__ ? '/app2' : '/choicepage',
+            defaultExtension: false,
+            meta: {
+              '*.js': {
+                format: 'system'
+              }
+            }
+          });
+        } else {
+          console.error('SystemJS not properly loaded');
         }
       });
     </script>
@@ -30,9 +38,14 @@
     <div id="root"></div>
     <script>
       // Use SystemJS to import the entry point
-      if (!window.__POWERED_BY_QIANKUN__) {
-        System.import('./src/main.tsx');
-      }
+      window.addEventListener('load', function() {
+        if (!window.__POWERED_BY_QIANKUN__) {
+          const entryUrl = window.location.origin + '/choicepage/assets/main.js';
+          System.import(entryUrl).catch(function(err) {
+            console.error('Failed to load entry point:', err);
+          });
+        }
+      });
     </script>
   </body>
 </html>

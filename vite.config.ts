@@ -26,16 +26,8 @@ const fixModuleScriptMimeType = () => {
       // Update all script tags
       $('script').each((_, el) => {
         const script = $(el);
-        // Don't set type="module" for SystemJS builds
-        if (!script.attr('src')?.includes('system.js')) {
-          script.attr('crossorigin', 'anonymous');
-        }
+        script.attr('crossorigin', 'anonymous');
       });
-      
-      // Add SystemJS if not present
-      if (!$('script[src*="system.js"]').length) {
-        $('head').prepend('<script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/system.min.js"></script>');
-      }
       
       return $.html();
     },
@@ -48,7 +40,7 @@ export default defineConfig(({ mode }) => {
   const isQiankun = mode === 'qiankun';
 
   return {
-    base: isDevelopment ? '/' : '/choicepage/',
+    base: isQiankun ? '/app2/' : isDevelopment ? '/' : '/choicepage/',
     plugins: [
       react(),
       qiankun('app2', {

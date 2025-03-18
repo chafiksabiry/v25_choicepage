@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const compression = require('compression');
-const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 5173;
@@ -17,34 +16,46 @@ app.use((req, res, next) => {
   next();
 });
 
-// Handle JavaScript files specifically
-app.get(['*/assets/*.js', '*.js'], (req, res, next) => {
-  const filePath = path.join(__dirname, 'dist', req.path.replace(/^\/choicepage\//, ''));
-  
-  if (fs.existsSync(filePath)) {
-    console.log(`Serving JavaScript file: ${filePath}`);
-    res.set('Content-Type', 'application/javascript; charset=utf-8');
-    res.sendFile(filePath);
-  } else {
-    console.log(`File not found: ${filePath}`);
-    next();
-  }
-});
-
-// Serve static files from the dist directory
-app.use(express.static(path.join(__dirname, 'dist'), {
+// Serve static files from the dist directory with proper MIME types
+app.use('/choicepage', express.static(path.join(__dirname, 'dist'), {
   setHeaders: (res, filePath) => {
     if (filePath.endsWith('.js')) {
       res.set('Content-Type', 'application/javascript; charset=utf-8');
     }
+    // Enable CORS for all static files
+    res.set('Access-Control-Allow-Origin', '*');
+    // Add cache control headers
+    res.set('Cache-Control', 'public, max-age=31536000');
   }
 }));
 
-// SPA fallback
+// Handle JavaScript files specifically
+app.get(['/choicepage/assets/*.js', '/choicepage/*.js'], (req, res, next) => {
+  const relativePath = req.path.replace('/choicepage/', '');
+  const filePath = path.join(__dirname, 'dist', relativePath);
+  
+  console.log(`Attempting to serve JS file: ${filePath}`);
+  
+  res.set('Content-Type', 'application/javascript; charset=utf-8');
+  res.set('Access-Control-Allow-Origin', '*');
+  res.sendFile(filePath, (err) => {
+    if (err) {
+      console.error(`Error serving ${filePath}:`, err);
+      next();
+    }
+  });
+});
+
+// SPA fallback - always serve index.html for any unmatched routes
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  if (!req.path.startsWith('/choicepage')) {
+    res.redirect('/choicepage' + req.path);
+  } else {
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  }
 });
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(`Serving static files from: ${path.join(__dirname, 'dist')}`);
 }); 
