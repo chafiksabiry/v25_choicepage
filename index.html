@@ -17,29 +17,66 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-router-dom@6/dist/umd/react-router-dom.production.min.js" crossorigin></script>
     
-    <!-- SystemJS -->
+    <!-- SystemJS Core -->
     <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/system.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/extras/amd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/extras/named-register.min.js"></script>
 
     <script type="text/javascript">
-      window.debug('Configuring SystemJS');
-      
-      // Configure SystemJS
-      System.config({
-        baseURL: '/choicepage',
-        defaultExtension: 'js',
-        meta: {
-          '*.js': {
-            format: 'system'
+      // Initialize SystemJS configuration after core is loaded
+      function initializeSystemJS() {
+        return new Promise((resolve, reject) => {
+          window.debug('Waiting for SystemJS to be available');
+          
+          // Check if SystemJS is available
+          if (typeof System === 'undefined') {
+            reject(new Error('SystemJS not loaded'));
+            return;
           }
-        },
-        map: {
-          'react': 'https://unpkg.com/react@18/umd/react.production.min.js',
-          'react-dom': 'https://unpkg.com/react-dom@18/umd/react-dom.production.min.js',
-          'react-router-dom': 'https://unpkg.com/react-router-dom@6/dist/umd/react-router-dom.production.min.js'
-        }
-      });
+
+          window.debug('SystemJS detected, loading extras');
+
+          // Load SystemJS extras
+          Promise.all([
+            loadScript('https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/extras/amd.min.js'),
+            loadScript('https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/extras/named-register.min.js')
+          ]).then(() => {
+            window.debug('SystemJS extras loaded, configuring');
+            
+            // Configure SystemJS
+            System.config({
+              baseURL: '/choicepage',
+              defaultExtension: 'js',
+              meta: {
+                '*.js': {
+                  format: 'system'
+                }
+              },
+              map: {
+                'react': 'https://unpkg.com/react@18/umd/react.production.min.js',
+                'react-dom': 'https://unpkg.com/react-dom@18/umd/react-dom.production.min.js',
+                'react-router-dom': 'https://unpkg.com/react-router-dom@6/dist/umd/react-router-dom.production.min.js'
+              }
+            });
+
+            window.debug('SystemJS configuration complete');
+            resolve();
+          }).catch(reject);
+        });
+      }
+
+      // Helper function to load scripts
+      function loadScript(src) {
+        return new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = src;
+          script.crossOrigin = 'anonymous';
+          script.onload = () => {
+            window.debug(`Loaded script: ${src}`);
+            resolve();
+          };
+          script.onerror = () => reject(new Error(`Failed to load script: ${src}`));
+          document.head.appendChild(script);
+        });
+      }
 
       // Error handler
       window.addEventListener('error', function(event) {
@@ -55,6 +92,8 @@
       // Load the application
       async function loadApplication() {
         try {
+          await initializeSystemJS();
+          
           if (!window.__POWERED_BY_QIANKUN__) {
             window.debug('Loading application in standalone mode');
             const mainScript = '/choicepage/assets/main.js';
@@ -95,13 +134,9 @@
       // Wait for all scripts to load
       window.addEventListener('load', function() {
         window.debug('Window load event fired');
-        // Ensure SystemJS is fully loaded
-        if (typeof System !== 'undefined' && typeof System.import === 'function') {
-          window.debug('SystemJS is ready');
-          loadApplication();
-        } else {
-          console.error('SystemJS not properly initialized');
-        }
+        loadApplication().catch(error => {
+          console.error('Failed to initialize application:', error);
+        });
       });
     </script>
   </head>
