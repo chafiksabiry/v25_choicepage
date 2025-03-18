@@ -36,7 +36,7 @@ export default defineConfig(({ mode }) => {
   const isQiankun = env.VITE_QIANKUN === 'true';
 
   return {
-    base: '/choicepage/',
+    base: '/',
     plugins: [
       react({
         jsxRuntime: 'classic',
