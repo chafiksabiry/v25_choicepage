@@ -28,7 +28,7 @@ function render(props: { container?: HTMLElement }) {
   }
 }
 
-// Register lifecycle hooks using `renderWithQiankun`
+// Register lifecycle hooks with `update` method
 renderWithQiankun({
   bootstrap() {
     console.log('[App2] bootstrap');
@@ -48,6 +48,10 @@ renderWithQiankun({
       root.unmount();
       root = null;
     }
+  },
+  update(props) {
+    console.log('[App2] update', props);
+    // You can implement logic here to handle prop updates dynamically
   }
 });
 
