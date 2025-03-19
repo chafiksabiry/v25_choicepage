@@ -16,18 +16,5 @@
     
     <!-- In development mode, use the module script -->
     <script type="module" src="/src/main.tsx"></script>
-    
-    <!-- For production/qiankun mode -->
-    <script>
-      // Only load the bundle in production or if we're in a qiankun context
-      if (window.location.hostname !== 'localhost' || window.__POWERED_BY_QIANKUN__) {
-        setTimeout(() => {
-          const script = document.createElement('script');
-          script.src = '/choicepage/index.js';
-          script.type = 'text/javascript';
-          document.body.appendChild(script);
-        }, 100); // Small delay to ensure React is loaded
-      }
-    </script>
   </body>
 </html>
