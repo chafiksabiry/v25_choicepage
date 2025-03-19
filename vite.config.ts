@@ -8,7 +8,7 @@ import * as cheerio from 'cheerio';
 const removeReactRefreshScript = () => {
   return {
     name: 'remove-react-refresh',
-    transformIndexHtml(html: any) {
+    transformIndexHtml(html: string) {
       const $ = cheerio.load(html);
       $('script[src="/@react-refresh"]').remove();
       return $.html();
@@ -16,51 +16,37 @@ const removeReactRefreshScript = () => {
   };
 };
 
-// Plugin to set correct MIME types
-const setProperMimeTypes = () => {
-  return {
-    name: 'set-proper-mime-types',
-    configureServer(server: any) {
-      server.middlewares.use((req: any, res: any, next: any) => {
-        if (req.url.match(/\.(js|mjs)$/)) {
-          res.setHeader('Content-Type', 'application/javascript; charset=UTF-8');
-        }
-        next();
-      });
-    },
-  };
-};
-
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
-  const isQiankun = env.VITE_QIANKUN === 'true';
+  //const isDevelopment = mode === 'development';
 
   return {
-    base: 'https://choicepage.harx.ai/',
+    // Use a relative base path for development to avoid CORS issues
+    base: 'https://choicepage.harx.ai',
     plugins: [
       react({
         jsxRuntime: 'classic',
       }),
       qiankun('app2', {
         useDevMode: true,
+        // @ts-ignore
+        scopeCss: true,
       }),
       removeReactRefreshScript(), // Add the script removal plugin
-      setProperMimeTypes(), // Add MIME type plugin
     ],
 
     define: {
       'import.meta.env': env,
     },
     server: {
-      port: 5157,
-      cors: true,
-      hmr: false,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-        'Access-Control-Allow-Headers': 'X-Requested-With, Content-Type, Authorization',
-        'Content-Type': 'application/javascript; charset=UTF-8',
+      port: 5173,
+      cors: {
+        origin: ['https://v25.harx.ai', 'http://localhost:3000'], // Allow both production and local development
+        methods: ['GET', 'POST', 'OPTIONS'], // Allowed HTTP methods
+        allowedHeaders: ['Content-Type', 'Authorization', 'access-control-allow-origin'], // Allowed headers
+        credentials: true, // If you need to send credentials (cookies, HTTP authentication, etc.)
       },
+      hmr: false,
       fs: {
         strict: true, // Ensure static assets are correctly resolved
       },
@@ -70,33 +56,31 @@ export default defineConfig(({ mode }) => {
       cssCodeSplit: false,
       outDir: 'dist',
       assetsDir: 'assets',
-      // Generate source maps for easier debugging
-      sourcemap: mode !== 'production',
+      emptyOutDir: true,
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: false, // Keep console logs for debugging
+        },
+      },
       rollupOptions: {
-        external: isQiankun ? ['react', 'react-dom'] : [],
         output: {
-          format: 'umd',
-          name: 'app2',
-          entryFileNames: 'index.js', // Fixed name for the JS entry file
-          chunkFileNames: 'chunk-[name].js', // Fixed name for chunks
+          format: 'es', // ES modules format
+          entryFileNames: 'index.js',
+          chunkFileNames: 'chunk-[name].js',
           assetFileNames: (assetInfo) => {
             // Ensure CSS files are consistently named
             if (assetInfo.name?.endsWith('.css')) {
               return 'index.css';
             }
-            return '[name].[ext]'; // Default for other asset types
+            return 'assets/[name].[ext]';
           },
-          // Ensure the output is properly exposing content to global scope for qiankun
-          globals: {
-            react: 'React',
-            'react-dom': 'ReactDOM',
+          // Add manualChunks to split vendor code
+          manualChunks: {
+            vendor: ['react', 'react-dom', 'react-router-dom'],
           },
-          // Add module type for proper loading
-          intro: 'if (typeof process === "undefined") { var process = { env: {} }; }',
         },
       },
-      // Prevent minification for better debugging in non-production modes
-      minify: mode === 'production',
     },
     resolve: {
       alias: {
