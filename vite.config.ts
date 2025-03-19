@@ -16,13 +16,34 @@ const removeReactRefreshScript = () => {
   };
 };
 
+// Plugin to set MIME types
+const addMimeTypeHeaders = () => {
+  return {
+    name: 'add-mime-type-headers',
+    configureServer(server: { middlewares: { use: (arg0: (req: any, res: any, next: any) => void) => void; }; }) {
+      server.middlewares.use((req, res, next) => {
+        if (req.url?.endsWith('.js')) {
+          res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+        }
+        next();
+      });
+    },
+    transformIndexHtml(html: string) {
+      // Add a meta tag to specify the JavaScript MIME type
+      return html.replace(
+        /<head>/,
+        '<head>\n  <meta http-equiv="Content-Type" content="application/javascript; charset=utf-8">'
+      );
+    },
+  };
+};
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
-  //const isDevelopment = mode === 'development';
 
   return {
     // Use a relative base path for development to avoid CORS issues
-    base: 'https://choicepage.harx.ai',
+    base: '/',
     plugins: [
       react({
         jsxRuntime: 'classic',
@@ -33,6 +54,7 @@ export default defineConfig(({ mode }) => {
         scopeCss: true,
       }),
       removeReactRefreshScript(), // Add the script removal plugin
+      addMimeTypeHeaders(), // Add MIME type headers
     ],
 
     define: {
@@ -65,18 +87,15 @@ export default defineConfig(({ mode }) => {
       },
       rollupOptions: {
         output: {
-          format: 'es', // ES modules format
-          entryFileNames: 'index.jssystem          chunkFileNames: 'chunk-[name].js',
+          format: 'umd', // System format for better compatibility
+          entryFileNames: 'index.js',
+          chunkFileNames: 'chunk-[name].js',
           assetFileNames: (assetInfo) => {
             // Ensure CSS files are consistently named
             if (assetInfo.name?.endsWith('.css')) {
               return 'index.css';
             }
             return 'assets/[name].[ext]';
-          },
-          // Add manualChunks to split vendor code
-          manualChunks: {
-            vendor: ['react', 'react-dom', 'react-router-dom'],
           },
         },
       },
