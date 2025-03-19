@@ -3,11 +3,12 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import qiankun from 'vite-plugin-qiankun';
 import * as cheerio from 'cheerio';
+import type { ViteDevServer } from 'vite';
 
 const removeReactRefreshScript = () => {
   return {
     name: 'remove-react-refresh',
-    transformIndexHtml(html) {
+    transformIndexHtml(html: string) {
       const $ = cheerio.load(html);
       $('script[src="/@react-refresh"]').remove();
       return $.html();
@@ -18,22 +19,22 @@ const removeReactRefreshScript = () => {
 const addMimeTypeHeaders = () => {
   return {
     name: 'add-mime-type-headers',
-    configureServer(server) {
-      server.middlewares.use((req, res, next) => {
+    configureServer(server: ViteDevServer) {
+      server.middlewares.use((req: any, res: any, next: () => void) => {
         if (req.url?.endsWith('.js')) {
           res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
         }
         next();
       });
     },
-    transformIndexHtml(html) {
+    transformIndexHtml(html: string) {
       let modified = html.replace(
         /<head>/,
         '<head>\n  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">'
       );
       modified = modified.replace(
         /<script([^>]*)>/g,
-        (match, attrs) => {
+        (match: string, attrs: string) => {
           if (!attrs.includes('type=')) {
             return `<script${attrs} type="text/javascript">`;
           }
@@ -52,7 +53,7 @@ export default defineConfig(({ mode }) => {
     base: '/choicepage/',
     plugins: [
       react({ jsxRuntime: 'classic' }),
-      qiankun('app2', { useDevMode: true, scopeCss: true, entry: '/app2/' }),
+      qiankun('app2', { useDevMode: true, entry: '/app2/' }),
       removeReactRefreshScript(),
       addMimeTypeHeaders(),
     ],

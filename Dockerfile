@@ -24,4 +24,4 @@ RUN npm install -g serve
 EXPOSE 5173
 
 # Command to serve the app
-CMD ["serve", "-s", "dist", "-l", "5173"]
+CMD ["serve", "-s", "dist/choicepage", "-l", "5173"]
