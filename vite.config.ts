@@ -92,9 +92,11 @@ export default defineConfig(({ mode }) => {
       },
       rollupOptions: {
         output: {
-          format: 'umd', // System.js format for better qiankun compatibility
+          format: 'umd', // UMD format for better qiankun compatibility
+          name: 'app2', // Library name is required for UMD format
           entryFileNames: 'index.js',
           chunkFileNames: 'chunk-[name].js',
+          inlineDynamicImports: false, // Disable inlineDynamicImports to allow manualChunks
           assetFileNames: (assetInfo) => {
             // Ensure CSS files are consistently named
             if (assetInfo.name?.endsWith('.css')) {
