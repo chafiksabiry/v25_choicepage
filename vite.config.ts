@@ -96,7 +96,7 @@ export default defineConfig(({ mode }) => {
           name: 'app2', // Library name is required for UMD format
           entryFileNames: 'index.js',
           chunkFileNames: 'chunk-[name].js',
-          inlineDynamicImports: false, // Disable inlineDynamicImports to allow manualChunks
+          inlineDynamicImports: true, // Enable inlineDynamicImports for UMD format
           assetFileNames: (assetInfo) => {
             // Ensure CSS files are consistently named
             if (assetInfo.name?.endsWith('.css')) {
@@ -104,10 +104,10 @@ export default defineConfig(({ mode }) => {
             }
             return 'assets/[name].[ext]';
           },
-          // Add manualChunks to split vendor code
-          manualChunks: {
-            vendor: ['react', 'react-dom', 'react-router-dom'],
-          },
+          // Comment out manualChunks as it's not compatible with UMD format
+          // manualChunks: {
+          //   vendor: ['react', 'react-dom', 'react-router-dom'],
+          // },
         },
       },
     },
