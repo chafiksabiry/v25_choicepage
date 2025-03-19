@@ -80,7 +80,7 @@ export default defineConfig(({ mode }) => {
       terserOptions: { compress: { drop_console: false } },
       rollupOptions: {
         output: {
-          format: 'iife',
+          format: 'umd',
           name: 'app2',
           entryFileNames: 'index.js',
           chunkFileNames: 'chunk-[name].js',
