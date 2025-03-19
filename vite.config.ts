@@ -29,8 +29,7 @@ export default defineConfig(({ mode }) => {
       }),
       qiankun('app2', {
         useDevMode: true,
-        // @ts-ignore
-        scopeCss: true,
+      
       }),
       removeReactRefreshScript(), // Add the script removal plugin
     ],
@@ -46,6 +45,7 @@ export default defineConfig(({ mode }) => {
         allowedHeaders: ['Content-Type', 'Authorization', 'access-control-allow-origin'], // Allowed headers
         credentials: true, // If you need to send credentials (cookies, HTTP authentication, etc.)
       },
+      // Disable HMR when running as a micro-app to prevent conflicts with qiankun
       hmr: false,
       fs: {
         strict: true, // Ensure static assets are correctly resolved

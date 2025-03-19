@@ -49,16 +49,13 @@ export async function bootstrap() {
   console.log('[App2] Bootstrapping...');
   
   try {
-    // Add any initialization logic here
-    // For example, loading initial data, setting up global state, etc.
-    
+    // Immediate resolution to avoid timeouts
     console.log('[App2] Bootstrap completed successfully');
     console.timeEnd('[App2] bootstrap');
-    return Promise.resolve();
   } catch (error) {
     console.error('[App2] Bootstrap failed:', error);
     console.timeEnd('[App2] bootstrap');
-    return Promise.reject(error);
+    throw error;
   }
 }
 
@@ -98,8 +95,8 @@ window.addEventListener('error', (event) => {
 
 // Standalone mode: If the app is running outside Qiankun, it will use this code
 if (!qiankunWindow.__POWERED_BY_QIANKUN__) {
-  console.log('[App] Running in standalone mode');
-  console.log('[App] Document ready state:', document.readyState);
+  console.log('[App2] Running in standalone mode');
+  console.log('[App2] Document ready state:', document.readyState);
   
   // Wait for the DOM to be fully loaded
   if (document.readyState === 'loading') {
@@ -118,4 +115,5 @@ if (!qiankunWindow.__POWERED_BY_QIANKUN__) {
 } else {
   console.log('[App] Running inside Qiankun');
   // Qiankun will control the lifecycle
+  render({});
 }
