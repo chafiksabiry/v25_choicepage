@@ -43,7 +43,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     // Use a relative base path for development to avoid CORS issues
-    base: '/',
+    base: '/choicepage/',
     plugins: [
       react({
         jsxRuntime: 'classic',
