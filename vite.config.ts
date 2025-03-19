@@ -4,11 +4,10 @@ import path from 'path';
 import qiankun from 'vite-plugin-qiankun';
 import * as cheerio from 'cheerio';
 
-// Plugin to remove React Refresh preamble
 const removeReactRefreshScript = () => {
   return {
     name: 'remove-react-refresh',
-    transformIndexHtml(html: string) {
+    transformIndexHtml(html) {
       const $ = cheerio.load(html);
       $('script[src="/@react-refresh"]').remove();
       return $.html();
@@ -16,11 +15,10 @@ const removeReactRefreshScript = () => {
   };
 };
 
-// Plugin to set MIME types
 const addMimeTypeHeaders = () => {
   return {
     name: 'add-mime-type-headers',
-    configureServer(server: { middlewares: { use: (arg0: (req: any, res: any, next: any) => void) => void; }; }) {
+    configureServer(server) {
       server.middlewares.use((req, res, next) => {
         if (req.url?.endsWith('.js')) {
           res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
@@ -28,12 +26,21 @@ const addMimeTypeHeaders = () => {
         next();
       });
     },
-    transformIndexHtml(html: string) {
-      // Add a meta tag to specify the JavaScript MIME type
-      return html.replace(
+    transformIndexHtml(html) {
+      let modified = html.replace(
         /<head>/,
-        '<head>\n  <meta http-equiv="Content-Type" content="application/javascript; charset=utf-8">'
+        '<head>\n  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">'
       );
+      modified = modified.replace(
+        /<script([^>]*)>/g,
+        (match, attrs) => {
+          if (!attrs.includes('type=')) {
+            return `<script${attrs} type="text/javascript">`;
+          }
+          return match;
+        }
+      );
+      return modified;
     },
   };
 };
@@ -42,56 +49,42 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
 
   return {
-    // Use a relative base path for development to avoid CORS issues
     base: '/choicepage/',
     plugins: [
-      react({
-        jsxRuntime: 'classic',
-      }),
-      qiankun('app2', {
-        useDevMode: true,
-        // @ts-ignore
-        scopeCss: true,
-      }),
-      removeReactRefreshScript(), // Add the script removal plugin
-      addMimeTypeHeaders(), // Add MIME type headers
+      react({ jsxRuntime: 'classic' }),
+      qiankun('app2', { useDevMode: true, scopeCss: true, entry: '/app2/' }),
+      removeReactRefreshScript(),
+      addMimeTypeHeaders(),
     ],
-
     define: {
       'import.meta.env': env,
     },
     server: {
       port: 5173,
       cors: {
-        origin: ['https://v25.harx.ai', 'http://localhost:3000'], // Allow both production and local development
-        methods: ['GET', 'POST', 'OPTIONS'], // Allowed HTTP methods
-        allowedHeaders: ['Content-Type', 'Authorization', 'access-control-allow-origin'], // Allowed headers
-        credentials: true, // If you need to send credentials (cookies, HTTP authentication, etc.)
+        origin: ['https://v25.harx.ai', 'http://localhost:3000'],
+        methods: ['GET', 'POST', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'access-control-allow-origin'],
+        credentials: true,
       },
       hmr: false,
-      fs: {
-        strict: true, // Ensure static assets are correctly resolved
-      },
+      fs: { strict: true },
     },
     build: {
       target: 'esnext',
       cssCodeSplit: false,
-      outDir: 'dist',
+      outDir: 'dist/choicepage', // Ensure JS file is in dist/choicepage
       assetsDir: 'assets',
       emptyOutDir: true,
       minify: 'terser',
-      terserOptions: {
-        compress: {
-          drop_console: false, // Keep console logs for debugging
-        },
-      },
+      terserOptions: { compress: { drop_console: false } },
       rollupOptions: {
         output: {
-          format: 'umd', // System format for better compatibility
+          format: 'iife',
+          name: 'app2',
           entryFileNames: 'index.js',
           chunkFileNames: 'chunk-[name].js',
           assetFileNames: (assetInfo) => {
-            // Ensure CSS files are consistently named
             if (assetInfo.name?.endsWith('.css')) {
               return 'index.css';
             }
@@ -101,9 +94,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     resolve: {
-      alias: {
-        '@': path.resolve(__dirname, 'src'),
-      },
+      alias: { '@': path.resolve(__dirname, 'src') },
     },
   };
 });
