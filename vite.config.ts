@@ -1,4 +1,4 @@
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig, loadEnv, Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import qiankun from 'vite-plugin-qiankun';
@@ -12,6 +12,32 @@ const removeReactRefreshScript = () => {
       const $ = cheerio.load(html);
       $('script[src="/@react-refresh"]').remove();
       return $.html();
+    },
+  };
+};
+
+// Plugin to ensure correct MIME types
+const ensureCorrectMimeTypes = (): Plugin => {
+  return {
+    name: 'ensure-correct-mime-types',
+    configureServer(server) {
+      return () => {
+        server.middlewares.use((req, res, next) => {
+          // Add proper MIME type header for JS files
+          if (req.url?.endsWith('.js')) {
+            res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+          }
+          next();
+        });
+      };
+    },
+    generateBundle(_, bundle) {
+      // Ensure JS files have the correct MIME type in production build
+      Object.values(bundle).forEach(chunk => {
+        if (chunk.type === 'chunk' || chunk.fileName.endsWith('.js')) {
+          chunk.fileName = chunk.fileName.replace(/\.js$/, '.js');
+        }
+      });
     },
   };
 };
@@ -32,6 +58,7 @@ export default defineConfig(({ mode }) => {
       
       }),
       removeReactRefreshScript(), // Add the script removal plugin
+      ensureCorrectMimeTypes(), // Add the MIME type plugin
     ],
 
     define: {
@@ -65,7 +92,7 @@ export default defineConfig(({ mode }) => {
       },
       rollupOptions: {
         output: {
-          format: 'es', // ES modules format
+          format: 'umd', // System.js format for better qiankun compatibility
           entryFileNames: 'index.js',
           chunkFileNames: 'chunk-[name].js',
           assetFileNames: (assetInfo) => {
