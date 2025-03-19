@@ -47,7 +47,19 @@ function render(props: { container?: HTMLElement }) {
 export async function bootstrap() {
   console.time('[App2] bootstrap');
   console.log('[App2] Bootstrapping...');
-  return Promise.resolve();
+  
+  try {
+    // Add any initialization logic here
+    // For example, loading initial data, setting up global state, etc.
+    
+    console.log('[App2] Bootstrap completed successfully');
+    console.timeEnd('[App2] bootstrap');
+    return Promise.resolve();
+  } catch (error) {
+    console.error('[App2] Bootstrap failed:', error);
+    console.timeEnd('[App2] bootstrap');
+    return Promise.reject(error);
+  }
 }
 
 export async function mount(props: any) {
