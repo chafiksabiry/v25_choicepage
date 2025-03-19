@@ -23,5 +23,5 @@ RUN npm install -g serve
 # Expose the port for the HTTP server
 EXPOSE 5173
 
-# Command to serve the app
-CMD ["serve", "-s", "dist", "-l", "5173"]
+# Command to serve the app with the correct path and configuration
+CMD ["serve", "-s", "dist/choicepage", "-l", "5173", "--cors"]
