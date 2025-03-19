@@ -42,23 +42,39 @@ const ensureCorrectMimeTypes = (): Plugin => {
   };
 };
 
+// Plugin for setting response headers
+const setResponseHeaders = (): Plugin => {
+  return {
+    name: 'set-response-headers',
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        // Set MIME types for JavaScript files
+        if (req.url?.endsWith('.js')) {
+          res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
+        }
+        next();
+      });
+    }
+  };
+};
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   //const isDevelopment = mode === 'development';
 
   return {
     // Use a relative base path for development to avoid CORS issues
-    base: 'https://v25.harx.ai/choicepage',
+    base: '/choicepage/',
     plugins: [
       react({
         jsxRuntime: 'classic',
       }),
       qiankun('app2', {
-        useDevMode: true,
-      
+        useDevMode: true
       }),
       removeReactRefreshScript(), // Add the script removal plugin
       ensureCorrectMimeTypes(), // Add the MIME type plugin
+      setResponseHeaders(), // Add headers plugin
     ],
 
     define: {
@@ -90,13 +106,22 @@ export default defineConfig(({ mode }) => {
           drop_console: false, // Keep console logs for debugging
         },
       },
+      // Configure as a library for Qiankun integration
+      lib: {
+        entry: path.resolve(__dirname, 'src/main.tsx'),
+        name: 'app2',
+        formats: ['system'],
+        fileName: () => 'index.js'
+      },
       rollupOptions: {
+        // Make sure to externalize dependencies that shouldn't be bundled
+        external: ['react', 'react-dom'],
         output: {
-          format: 'umd', // UMD format for better qiankun compatibility
-          name: 'app2', // Library name is required for UMD format
-          entryFileNames: 'index.js',
-          chunkFileNames: 'chunk-[name].js',
-          inlineDynamicImports: true, // Enable inlineDynamicImports for UMD format
+          // Global variables to use in UMD build for externalized deps
+          globals: {
+            react: 'React',
+            'react-dom': 'ReactDOM'
+          },
           assetFileNames: (assetInfo) => {
             // Ensure CSS files are consistently named
             if (assetInfo.name?.endsWith('.css')) {
@@ -104,10 +129,6 @@ export default defineConfig(({ mode }) => {
             }
             return 'assets/[name].[ext]';
           },
-          // Comment out manualChunks as it's not compatible with UMD format
-          // manualChunks: {
-          //   vendor: ['react', 'react-dom', 'react-router-dom'],
-          // },
         },
       },
     },
