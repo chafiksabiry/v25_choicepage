@@ -1,32 +1,26 @@
-# Build stage
-FROM node:18-alpine as builder
+# Use a lightweight Node.js base image
+FROM node:18-alpine
 
 # Set the working directory
 WORKDIR /app
 
-# Copy package files
+# Copy package.json and package-lock.json to install dependencies
 COPY package*.json ./
 
 # Install dependencies
 RUN npm install
 
-# Copy source code
+# Copy the source code and serve configuration
 COPY . .
 
 # Build the app
 RUN npm run build
 
-# Serve stage
-FROM nginx:alpine
+# Install a lightweight HTTP server to serve the build
+RUN npm install -g serve
 
-# Copy nginx configuration
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Expose the port for the HTTP server
+EXPOSE 5173
 
-# Copy built files from builder stage
-COPY --from=builder /app/dist/choicepage /usr/share/nginx/html/choicepage
-
-# Expose port
-EXPOSE 80
-
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Command to serve the app with the correct path and configuration
+CMD ["serve", "-s", "dist", "-l", "5173", "--cors"]
