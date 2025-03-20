@@ -7,11 +7,10 @@ WORKDIR /app
 # Copy package.json and package-lock.json to install dependencies
 COPY package*.json ./
 
-
 # Install dependencies
 RUN npm install
 
-# Copy the source code
+# Copy the source code and serve configuration
 COPY . .
 
 # Build the app
@@ -24,4 +23,4 @@ RUN npm install -g serve
 EXPOSE 5173
 
 # Command to serve the app with the correct path and configuration
-CMD ["serve", "-s", "dist/choicepage", "-l", "5173", "--cors"]
+CMD ["serve", "-l", "5173", "--cors"]
