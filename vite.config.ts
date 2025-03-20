@@ -20,7 +20,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
 
   return {
-    base: '/choicepage',
+    base: 'https://choicepage.harx.ai/',
     plugins: [
       react({
         jsxRuntime: 'classic',
@@ -28,7 +28,7 @@ export default defineConfig(({ mode }) => {
       qiankun('app2', {
         useDevMode: true,
       }),
-      removeReactRefreshScript(), // Add the script removal plugin
+      removeReactRefreshScript(),
     ],
 
     define: {
@@ -39,7 +39,10 @@ export default defineConfig(({ mode }) => {
       cors: true,
       hmr: false,
       fs: {
-        strict: true, // Ensure static assets are correctly resolved
+        strict: true,
+      },
+      headers: {
+        'Content-Type': 'application/javascript',
       },
     },
     build: {
@@ -49,14 +52,14 @@ export default defineConfig(({ mode }) => {
         output: {
           format: 'umd',
           name: 'app2',
-          entryFileNames: 'index.js', // Fixed name for the JS entry file
-          chunkFileNames: 'chunk-[name].js', // Fixed name for chunks
+          outDir: 'dist',
+          entryFileNames: 'index.js',
+          chunkFileNames: 'chunk-[name].js',
           assetFileNames: (assetInfo) => {
-            // Ensure CSS files are consistently named
-            if (assetInfo.name.endsWith('.css')) {
+            if (assetInfo.name?.endsWith('.css')) {
               return 'index.css';
             }
-            return '[name].[ext]'; // Default for other asset types
+            return '[name].[ext]';
           },
         },
       },
