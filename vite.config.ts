@@ -41,16 +41,13 @@ export default defineConfig(({ mode }) => {
       fs: {
         strict: true,
       },
-      headers: {
-        'Content-Type': 'application/javascript',
-      },
     },
     build: {
       target: 'esnext',
       cssCodeSplit: false,
       rollupOptions: {
         output: {
-          format: 'umd',
+          format: 'es',
           name: 'app2',
           outDir: 'dist',
           entryFileNames: 'index.js',
