@@ -20,7 +20,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
 
   return {
-    base: '/',
+    base: '/choicepage',
     plugins: [
       react({
         jsxRuntime: 'classic',
@@ -35,7 +35,7 @@ export default defineConfig(({ mode }) => {
       'import.meta.env': env,
     },
     server: {
-      port: 5157,
+      port: 5173,
       cors: true,
       hmr: false,
       fs: {
