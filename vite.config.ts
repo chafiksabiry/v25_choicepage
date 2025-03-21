@@ -36,7 +36,6 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       port: 5173,
-      cors: true,
       hmr: false,
       fs: {
         strict: true,
