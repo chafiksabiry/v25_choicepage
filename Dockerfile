@@ -23,4 +23,4 @@ RUN npm install -g serve
 EXPOSE 5173
 
 # Command to serve the app with the correct path and configuration
-CMD ["serve", "-s", "dist", "-l", "5173", "--cors"]
+CMD ["serve", "-s", "dist", "-l", "5173"]
