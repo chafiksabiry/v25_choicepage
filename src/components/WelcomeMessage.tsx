@@ -77,7 +77,7 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
           <button
             onClick={() => {
               onClose();
-              window.location.href = type === 'company' ? '/app4' : 'app3';
+              window.location.href = type === 'company' ? '/companysearchwizard' : 'repcreationwizard';
 
             }}
             className="bg-blue-600 text-white py-2 px-6 rounded-lg flex items-center hover:bg-blue-700 transition-colors mx-auto"
