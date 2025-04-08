@@ -11,8 +11,9 @@ import App from './App';
 import './index.css';
 import Cookies from 'js-cookie';
 
-const storedUserId = Cookies.get('userId');
-console.log('Stored userId from cookie:', storedUserId);
+
+const userId = Cookies.get('userId');
+console.log('Stored userId from cookie:', userId);
 // Store the root instance for proper unmounting
 let root: ReturnType<typeof createRoot> | null = null;
 
