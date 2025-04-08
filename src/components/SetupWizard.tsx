@@ -104,7 +104,7 @@ export function SetupWizard({ onClose }: { onClose: () => void }) {
                 Back
               </button>
               <button
-                onClick={() => navigate('/app3')}
+                onClick={() => navigate('/repcreationwizard')}
                 className="bg-blue-600 text-white py-2 px-6 rounded-lg flex items-center hover:bg-blue-700 transition-colors"
               >
                 Continue
@@ -152,7 +152,7 @@ export function SetupWizard({ onClose }: { onClose: () => void }) {
                 Back
               </button>
               <button
-                onClick={() => navigate('/app4')}
+                onClick={() => navigate('/companysearchwizard')}
                 className="bg-blue-600 text-white py-2 px-6 rounded-lg flex items-center hover:bg-blue-700 transition-colors"
               >
                 Continue
