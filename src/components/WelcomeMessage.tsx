@@ -27,7 +27,7 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
         newType: type,
       });
   
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/change-user-type`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/change-user-type`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
