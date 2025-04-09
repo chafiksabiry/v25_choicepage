@@ -19,8 +19,14 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
   console.log('Stored userId from cookie:', userId);
   const handleContinue = async () => {
     setLoading(true);
+    setError(null);
+  
     try {
-      // Send the type update request to the backend
+      console.log("Sending request with:", {
+        userId,
+        newType: type,
+      });
+  
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/change-user-type`, {
         method: 'PUT',
         headers: {
@@ -31,20 +37,27 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
           newType: type,
         }),
       });
-
+  
       const data = await response.json();
+      console.log("Response from backend:", data);
+  
       if (!response.ok) {
         throw new Error(data.error || 'Failed to update user type');
       }
-
-      // Redirect after updating the user type
+  
+      // Save new type in cookie (if backend doesn't do it)
+      Cookies.set('userType', type);
+  
+      // Redirect based on type
       window.location.href = type === 'company' ? '/app4' : '/app3';
-      onClose();
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || 'Something went wrong');
+      console.error("Error updating user type:", err);
+    } finally {
       setLoading(false);
     }
   };
+  
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-2xl w-full max-w-2xl p-8 relative">
