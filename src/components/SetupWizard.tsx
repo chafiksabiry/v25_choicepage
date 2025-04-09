@@ -5,14 +5,14 @@ import { supabase } from '../lib/supabase';
 
 export function SetupWizard({ onClose }: { onClose: () => void }) {
   const [step, setStep] = useState(1);
-  const [flowType, setFlowType] = useState<'company' | 'professional' | null>(null);
+  const [flowType, setFlowType] = useState<'company' | 'rep' | null>(null);
   const navigate = useNavigate();
 
   const handleSelection = (type: 'post' | 'find') => {
     if (type === 'post') {
       setFlowType('company');
     } else {
-      setFlowType('professional');
+      setFlowType('rep');
     }
     setStep(2);
   };
@@ -45,7 +45,7 @@ export function SetupWizard({ onClose }: { onClose: () => void }) {
                     <Building2 className="w-8 h-8 text-blue-600 group-hover:text-white" />
                   </div>
                   <h3 className="text-xl font-semibold mb-2">Post a Gig</h3>
-                  <p className="text-gray-600 text-sm">For companies looking to hire contact center professionals</p>
+                  <p className="text-gray-600 text-sm">For companies looking to hire contact center reps</p>
                 </div>
               </button>
 
@@ -58,7 +58,7 @@ export function SetupWizard({ onClose }: { onClose: () => void }) {
                     <User2 className="w-8 h-8 text-blue-600 group-hover:text-white" />
                   </div>
                   <h3 className="text-xl font-semibold mb-2">Find a Gig</h3>
-                  <p className="text-gray-600 text-sm">For professionals seeking contact center opportunities</p>
+                  <p className="text-gray-600 text-sm">For reps seeking contact center opportunities</p>
                 </div>
               </button>
             </div>
@@ -74,7 +74,7 @@ export function SetupWizard({ onClose }: { onClose: () => void }) {
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Welcome to Harx!</h2>
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
               <p className="text-gray-700 mb-4">
-                We're excited to have you join our platform! Before you can post your first gig, we need to set up your company profile. This will help professionals learn more about your organization and make informed decisions.
+                We're excited to have you join our platform! Before you can post your first gig, we need to set up your company profile. This will help reps learn more about your organization and make informed decisions.
               </p>
               <p className="text-gray-700">
                 The next steps will guide you through creating your company profile, including:
@@ -114,12 +114,12 @@ export function SetupWizard({ onClose }: { onClose: () => void }) {
           </div>
         )}
 
-        {step === 2 && flowType === 'professional' && (
+        {step === 2 && flowType === 'rep' && (
           <div className="text-center">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Welcome to Harx!</h2>
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
               <p className="text-gray-700 mb-4">
-                We're thrilled to have you join our community of contact center professionals! Before you start exploring gigs, let's set up your professional profile to help you stand out to potential employers.
+                We're thrilled to have you join our community of contact center reps! Before you start exploring gigs, let's set up your rep profile to help you stand out to potential employers.
               </p>
               <p className="text-gray-700">
                 Your profile setup will include:
