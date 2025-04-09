@@ -1,15 +1,50 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { X, ArrowRight, Briefcase, Award, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 interface WelcomeMessageProps {
-  type: 'company' | 'professional';
+  type: 'company' | 'rep';
   onClose: () => void;
 }
 
+
+
+
 export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const userId = Cookies.get('userId');
+  console.log('Stored userId from cookie:', userId);
+  const handleContinue = async () => {
+    setLoading(true);
+    try {
+      // Send the type update request to the backend
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/change-user-type`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          newType: type,
+        }),
+      });
 
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to update user type');
+      }
+
+      // Redirect after updating the user type
+      window.location.href = type === 'company' ? '/app4' : '/app3';
+      onClose();
+    } catch (err: any) {
+      setError(err.message);
+      setLoading(false);
+    }
+  };
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-2xl w-full max-w-2xl p-8 relative">
@@ -75,11 +110,7 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
           )}
           
           <button
-            onClick={() => {
-              onClose();
-              window.location.href = type === 'company' ? '/app4' : 'app3';
-
-            }}
+            onClick={handleContinue}
             className="bg-blue-600 text-white py-2 px-6 rounded-lg flex items-center hover:bg-blue-700 transition-colors mx-auto"
           >
             Continue
