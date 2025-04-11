@@ -10,11 +10,48 @@ import { HashRouter } from 'react-router-dom';  // Use HashRouter for micro-fron
 import App from './App';
 import './index.css';
 import Cookies from 'js-cookie';
+import { auth } from '../lib/api';
+
+const [isAlreadyLoggedIn, setIsAlreadyLoggedIn] = useState(false);
 
 
 const userId = Cookies.get('userId');
 console.log('Stored userId from cookie:', userId);
 // Store the root instance for proper unmounting
+if (userId == null){
+  window.location.href = '/app1'
+}
+
+useEffect(() => {
+  const checkExistingUser = async () => {
+    const userId = Cookies.get('userId');
+    if (userId) {
+      try {
+        const checkUserType = await auth.checkUserType(userId);
+        let redirectTo;
+        
+        if (checkUserType.userType === 'company') {
+          redirectTo = '/app7';
+        } else {
+          redirectTo = '/app8';
+        }
+        
+        setIsAlreadyLoggedIn(true);
+        setRedirectPath(redirectTo);
+        
+        // Redirect after showing the message for 2 seconds
+        setTimeout(() => {
+          window.location.href = redirectTo;
+        }, 2000);
+      } catch (error) {
+        console.error('Error checking user type:', error);
+        // If there's an error, we'll let the user sign in normally
+      }
+    }
+  };
+
+  checkExistingUser();
+}, []);
 let root: ReturnType<typeof createRoot> | null = null;
 
 function render(props: { container?: HTMLElement }) {
