@@ -6,9 +6,9 @@ import { WelcomeMessage } from './components/WelcomeMessage';
 function App() {
   const navigate = useNavigate();
   const [showWelcome, setShowWelcome] = useState(false);
-  const [welcomeType, setWelcomeType] = useState<'company' | 'professional' | null>(null);
+  const [welcomeType, setWelcomeType] = useState<'company' | 'rep' | null>(null);
 
-  const handleShowWelcome = (type: 'company' | 'professional') => {
+  const handleShowWelcome = (type: 'company' | 'rep') => {
     setWelcomeType(type);
     setShowWelcome(true);
   };
@@ -110,7 +110,7 @@ function App() {
                 </div>
               </div>
               <button 
-                onClick={() => handleShowWelcome('professional')}
+                onClick={() => handleShowWelcome('rep')}
                 className="mt-8 w-full bg-blue-600 text-white py-3 px-6 rounded-lg flex items-center justify-center group-hover:bg-blue-700 transition-colors"
               >
                 Find Gigs
