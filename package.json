@@ -29,6 +29,7 @@
     "vite-react-typescript-starter": "file:"
   },
   "devDependencies": {
+    "@types/js-cookie": "^3.0.6",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
