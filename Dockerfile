@@ -7,7 +7,7 @@ WORKDIR /app
 # Copy package.json and package-lock.json to install dependencies
 COPY package*.json ./
 
-ENV VITE_API_URL=https://api-registration.harx.ai/api
+ENV VITE_API_URL=https://preprod-api-registration.harx.ai/api
 
 # Install dependencies
 RUN npm install
