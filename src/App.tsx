@@ -15,7 +15,6 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
-      {/* Hero Section - Amélioré avec meilleur contraste */}
       <div 
         className="h-[50vh] bg-cover bg-center relative"
         style={{
