@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { Building2, Users, ArrowRight, Headphones, PhoneCall, MessagesSquare, Phone, HeadphonesIcon, Target } from 'lucide-react';
 import { WelcomeMessage } from './components/WelcomeMessage';
+import harxLogo from './assets/harx-blanc.jpg';
 
 function App() {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ function App() {
             {/* Logo HARX Rectangulaire */}
             <div className="overflow-hidden rounded-2xl mb-1 mt-0 mx-auto inline-block">
               <img 
-                src="/src/assets/harx-blanc.jpg" 
+                src={harxLogo} 
                 alt="HARX Logo" 
                 className="w-64 h-32 md:w-80 md:h-[7rem] object-contain drop-shadow-2xl transition-all duration-300"
                 // style={{ borderRadius: '25px' }}
