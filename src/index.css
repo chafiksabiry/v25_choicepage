@@ -68,22 +68,48 @@
     -webkit-backdrop-filter: blur(8px);
   }
   
-  /* Custom scrollbar for better UX */
+    /* Custom scrollbar for better UX */
   ::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
   }
-  
+
   ::-webkit-scrollbar-track {
-    background: #f1f5f9;
+    background: transparent;
   }
-  
+
   ::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 4px;
+    background: rgba(148, 163, 184, 0.3);
+    border-radius: 10px;
+    transition: all 0.2s ease;
   }
-  
+
   ::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
+    background: rgba(148, 163, 184, 0.6);
+  }
+
+  /* Custom scrollbar for popups and modals */
+  .modal-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .modal-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .modal-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(59, 130, 246, 0.2);
+    border-radius: 10px;
+    transition: all 0.2s ease;
+  }
+
+  .modal-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(59, 130, 246, 0.4);
+  }
+
+  /* Firefox scrollbar */
+  .modal-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(59, 130, 246, 0.2) transparent;
   }
   
   /* Custom selection color */
