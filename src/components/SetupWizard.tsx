@@ -18,8 +18,9 @@ export function SetupWizard({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl w-full max-w-2xl p-8 relative">
+    <div className="fixed inset-0 bg-black/50 flex items-start justify-center z-50 p-4 overflow-y-auto modal-scrollbar">
+      <div className="bg-white rounded-2xl w-full max-w-3xl my-8 p-6 md:p-10 relative max-h-[90vh] overflow-y-auto modal-scrollbar">
+        <div className="py-2">
         <button 
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
@@ -36,18 +37,19 @@ export function SetupWizard({ onClose }: { onClose: () => void }) {
             </p>
 
             <div className="grid md:grid-cols-2 gap-6">
-              <button
-                onClick={() => handleSelection('post')}
-                className="group p-6 border-2 border-gray-200 rounded-xl hover:border-blue-500 transition-colors"
-              >
-                <div className="flex flex-col items-center">
-                  <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-4 group-hover:bg-blue-500 transition-colors">
-                    <Building2 className="w-8 h-8 text-blue-600 group-hover:text-white" />
+              <div className="relative">
+                <div className="p-6 border-2 border-gray-300 rounded-xl cursor-not-allowed pointer-events-none w-full bg-gray-50">
+                  <div className="flex flex-col items-center">
+                    <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center mb-4">
+                      <Building2 className="w-8 h-8 text-gray-400" />
+                    </div>
+                    <h3 className="text-xl font-semibold mb-2 text-gray-500">Post a Gig</h3>
+                    <p className="text-gray-400 text-sm">For companies looking to hire contact center reps</p>
+                    <div className="mt-2 text-xs text-gray-500 font-medium bg-gray-200 px-2 py-1 rounded">Coming Soon</div>
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">Post a Gig</h3>
-                  <p className="text-gray-600 text-sm">For companies looking to hire contact center reps</p>
                 </div>
-              </button>
+                <div className="absolute inset-0 bg-black/10 rounded-xl pointer-events-none"></div>
+              </div>
 
               <button
                 onClick={() => handleSelection('find')}
@@ -105,10 +107,10 @@ export function SetupWizard({ onClose }: { onClose: () => void }) {
               </button>
               <button
                 onClick={() => navigate('/repcreationwizard')}
-                className="bg-blue-600 text-white py-2 px-6 rounded-lg flex items-center hover:bg-blue-700 transition-colors"
+                className="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-6 rounded-lg font-semibold transition-all duration-300 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center"
               >
                 Continue
-                <ArrowRight className="w-5 h-5 ml-2" />
+                <ArrowRight className="w-5 h-5 ml-3" />
               </button>
             </div>
           </div>
@@ -153,14 +155,15 @@ export function SetupWizard({ onClose }: { onClose: () => void }) {
               </button>
               <button
                 onClick={() => navigate('/companysearchwizard')}
-                className="bg-blue-600 text-white py-2 px-6 rounded-lg flex items-center hover:bg-blue-700 transition-colors"
+                className="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-6 rounded-lg font-semibold transition-all duration-300 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center"
               >
                 Continue
-                <ArrowRight className="w-5 h-5 ml-2" />
+                <ArrowRight className="w-5 h-5 ml-3" />
               </button>
             </div>
           </div>
         )}
+        </div>
       </div>
     </div>
   );

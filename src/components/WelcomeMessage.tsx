@@ -57,61 +57,62 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
   };
   
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-custom flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-3xl w-full max-w-3xl p-8 md:p-12 relative shadow-2xl border border-gray-100 card-hover">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-custom flex items-start justify-center z-50 p-4 overflow-y-auto modal-scrollbar">
+      <div className="bg-white rounded-3xl w-full max-w-3xl my-8 p-6 md:p-10 relative shadow-2xl border border-gray-100 card-hover max-h-[90vh] overflow-y-auto modal-scrollbar">
+        <div className="py-2">
         <button 
           onClick={onClose}
-          className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-full hover:bg-gray-100"
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-full hover:bg-gray-100 z-10"
           aria-label="Close"
         >
-          <X className="w-6 h-6" />
+          <X className="w-5 h-5" />
         </button>
 
         <div className="text-center">
-          <div className="mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <div className="mb-6">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
               Welcome to Harx!
             </h2>
-            <p className="text-gray-600 text-lg">
+            <p className="text-gray-600 text-base md:text-lg">
               Let's get you started on your journey
             </p>
           </div>
           
           {type === 'company' ? (
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-2xl p-8 mb-8">
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-2xl p-4 md:p-6 mb-6">
               <div className="text-left">
-                <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
-                  <Briefcase className="w-6 h-6 mr-3 text-blue-600" />
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3 flex items-center">
+                  <Briefcase className="w-5 h-5 md:w-6 md:h-6 mr-2 md:mr-3 text-blue-600" />
                   Company Profile Setup
                 </h3>
-                <p className="text-gray-700 mb-6 leading-relaxed">
+                <p className="text-gray-700 mb-4 md:mb-6 leading-relaxed text-sm md:text-base">
                   We're excited to have you join our platform! Before you can post your first gig, we need to set up your company profile. This will help professionals learn more about your organization and make informed decisions.
                 </p>
-                <p className="text-gray-700 mb-4 font-medium">
+                <p className="text-gray-700 mb-3 md:mb-4 font-medium text-sm md:text-base">
                   The next steps will guide you through creating your company profile, including:
                 </p>
-                <ul className="space-y-3">
-                  <li className="flex items-start text-gray-700">
-                    <div className="p-1 bg-blue-200 rounded-full mr-3 mt-1">
-                      <ArrowRight className="w-4 h-4 text-blue-600" />
+                <ul className="space-y-2 md:space-y-3">
+                  <li className="flex items-start text-gray-700 text-sm md:text-base">
+                    <div className="p-1 bg-blue-200 rounded-full mr-2 md:mr-3 mt-0.5">
+                      <ArrowRight className="w-3 h-3 md:w-4 md:h-4 text-blue-600" />
                     </div>
                     <span>Company information and description</span>
                   </li>
-                  <li className="flex items-start text-gray-700">
-                    <div className="p-1 bg-blue-200 rounded-full mr-3 mt-1">
-                      <ArrowRight className="w-4 h-4 text-blue-600" />
+                  <li className="flex items-start text-gray-700 text-sm md:text-base">
+                    <div className="p-1 bg-blue-200 rounded-full mr-2 md:mr-3 mt-0.5">
+                      <ArrowRight className="w-3 h-3 md:w-4 md:h-4 text-blue-600" />
                     </div>
                     <span>Contact details and location</span>
                   </li>
-                  <li className="flex items-start text-gray-700">
-                    <div className="p-1 bg-blue-200 rounded-full mr-3 mt-1">
-                      <ArrowRight className="w-4 h-4 text-blue-600" />
+                  <li className="flex items-start text-gray-700 text-sm md:text-base">
+                    <div className="p-1 bg-blue-200 rounded-full mr-2 md:mr-3 mt-0.5">
+                      <ArrowRight className="w-3 h-3 md:w-4 md:h-4 text-blue-600" />
                     </div>
                     <span>Company logo and branding materials</span>
                   </li>
-                  <li className="flex items-start text-gray-700">
-                    <div className="p-1 bg-blue-200 rounded-full mr-3 mt-1">
-                      <ArrowRight className="w-4 h-4 text-blue-600" />
+                  <li className="flex items-start text-gray-700 text-sm md:text-base">
+                    <div className="p-1 bg-blue-200 rounded-full mr-2 md:mr-3 mt-0.5">
+                      <ArrowRight className="w-3 h-3 md:w-4 md:h-4 text-blue-600" />
                     </div>
                     <span>Work environment and culture details</span>
                   </li>
@@ -119,45 +120,45 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
               </div>
             </div>
           ) : (
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-2xl p-8 mb-8">
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-2xl p-4 md:p-6 mb-6">
               <div className="text-left">
-                <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
-                  <Award className="w-6 h-6 mr-3 text-blue-600" />
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-3 flex items-center">
+                  <Award className="w-5 h-5 md:w-6 md:h-6 mr-2 md:mr-3 text-blue-600" />
                   Professional Profile Setup
                 </h3>
-                <p className="text-gray-700 mb-6 leading-relaxed">
+                <p className="text-gray-700 mb-4 md:mb-6 leading-relaxed text-sm md:text-base">
                   We're thrilled to have you join our community of contact center professionals! Before you start exploring gigs, let's set up your professional profile to help you stand out to potential employers.
                 </p>
-                <p className="text-gray-700 mb-4 font-medium">
+                <p className="text-gray-700 mb-3 md:mb-4 font-medium text-sm md:text-base">
                   Your profile setup will include:
                 </p>
-                <ul className="space-y-3">
-                  <li className="flex items-start text-gray-700">
-                    <div className="p-1 bg-blue-200 rounded-full mr-3 mt-1">
-                      <Briefcase className="w-4 h-4 text-blue-600" />
+                <ul className="space-y-2 md:space-y-3">
+                  <li className="flex items-start text-gray-700 text-sm md:text-base">
+                    <div className="p-1 bg-blue-200 rounded-full mr-2 md:mr-3 mt-0.5">
+                      <Briefcase className="w-3 h-3 md:w-4 md:h-4 text-blue-600" />
                     </div>
                     <span>Work experience and specialized skills</span>
                   </li>
-                  <li className="flex items-start text-gray-700">
-                    <div className="p-1 bg-blue-200 rounded-full mr-3 mt-1">
-                      <Award className="w-4 h-4 text-blue-600" />
+                  <li className="flex items-start text-gray-700 text-sm md:text-base">
+                    <div className="p-1 bg-blue-200 rounded-full mr-2 md:mr-3 mt-0.5">
+                      <Award className="w-3 h-3 md:w-4 md:h-4 text-blue-600" />
                     </div>
                     <span>Certifications and achievements</span>
                   </li>
-                  <li className="flex items-start text-gray-700">
-                    <div className="p-1 bg-blue-200 rounded-full mr-3 mt-1">
-                      <Clock className="w-4 h-4 text-blue-600" />
+                  <li className="flex items-start text-gray-700 text-sm md:text-base">
+                    <div className="p-1 bg-blue-200 rounded-full mr-2 md:mr-3 mt-0.5">
+                      <Clock className="w-3 h-3 md:w-4 md:h-4 text-blue-600" />
                     </div>
                     <span>Availability and scheduling preferences</span>
                   </li>
-                  <li className="flex items-start text-gray-700">
-                    <div className="p-1 bg-blue-200 rounded-full mr-3 mt-1">
-                      <ArrowRight className="w-4 h-4 text-blue-600" />
+                  <li className="flex items-start text-gray-700 text-sm md:text-base">
+                    <div className="p-1 bg-blue-200 rounded-full mr-2 md:mr-3 mt-0.5">
+                      <ArrowRight className="w-3 h-3 md:w-4 md:h-4 text-blue-600" />
                     </div>
                     <span>Professional photo and personal statement</span>
                   </li>
                 </ul>
-                <p className="mt-6 text-gray-700 bg-white p-4 rounded-lg border border-blue-200">
+                <p className="mt-4 md:mt-6 text-gray-700 bg-white p-3 md:p-4 rounded-lg border border-blue-200 text-sm md:text-base">
                   <strong>Pro tip:</strong> A complete profile increases your chances of finding the perfect gig that matches your skills and preferences.
                 </p>
               </div>
@@ -165,15 +166,15 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
           )}
           
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-700">{error}</p>
+            <div className="mb-4 md:mb-6 p-3 md:p-4 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-700 text-sm md:text-base">{error}</p>
             </div>
           )}
           
           <button
             onClick={handleContinue}
             disabled={loading}
-            className="btn-primary mx-auto disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-6 rounded-lg font-semibold transition-all duration-300 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center mx-auto"
           >
             {loading ? (
               <>
@@ -187,6 +188,7 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
               </>
             )}
           </button>
+        </div>
         </div>
       </div>
     </div>

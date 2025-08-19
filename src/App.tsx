@@ -93,13 +93,10 @@ function App() {
                   <span className="font-medium text-sm">Technical Support Specialists</span>
                 </div>
               </div>
-              <button 
-                onClick={() => handleShowWelcome('company')}
-                className="mt-4 w-full btn-primary flex items-center justify-center group-hover:from-blue-700 group-hover:to-blue-800"
-              >
+              <div className="mt-4 w-full bg-gray-300 text-gray-500 py-3 px-6 rounded-lg flex items-center justify-center cursor-not-allowed pointer-events-none">
                 Post a Gig
-                <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform" />
-              </button>
+                <ArrowRight className="w-5 h-5 ml-3" />
+              </div>
             </div>
           </div>
 
