@@ -58,7 +58,8 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
   
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-custom flex items-start justify-center z-50 p-4 overflow-y-auto modal-scrollbar">
-      <div className="bg-white rounded-3xl w-full max-w-2xl my-8 p-6 md:p-8 relative shadow-2xl border border-gray-100 card-hover max-h-[90vh] overflow-y-auto modal-scrollbar">
+      <div className="bg-white rounded-3xl w-full max-w-3xl my-8 p-6 md:p-10 relative shadow-2xl border border-gray-100 card-hover max-h-[90vh] overflow-y-auto modal-scrollbar">
+        <div className="py-2">
         <button 
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-full hover:bg-gray-100 z-10"
@@ -173,7 +174,7 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
           <button
             onClick={handleContinue}
             disabled={loading}
-            className="btn-primary mx-auto disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base py-2 md:py-3 px-4 md:px-6"
+            className="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-6 rounded-lg font-semibold transition-all duration-300 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center mx-auto"
           >
             {loading ? (
               <>
@@ -187,6 +188,7 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
               </>
             )}
           </button>
+        </div>
         </div>
       </div>
     </div>

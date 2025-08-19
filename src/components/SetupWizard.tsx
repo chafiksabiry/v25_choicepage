@@ -19,7 +19,8 @@ export function SetupWizard({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-start justify-center z-50 p-4 overflow-y-auto modal-scrollbar">
-      <div className="bg-white rounded-2xl w-full max-w-2xl my-8 p-6 md:p-8 relative max-h-[90vh] overflow-y-auto modal-scrollbar">
+      <div className="bg-white rounded-2xl w-full max-w-3xl my-8 p-6 md:p-10 relative max-h-[90vh] overflow-y-auto modal-scrollbar">
+        <div className="py-2">
         <button 
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
@@ -106,10 +107,10 @@ export function SetupWizard({ onClose }: { onClose: () => void }) {
               </button>
               <button
                 onClick={() => navigate('/repcreationwizard')}
-                className="bg-blue-600 text-white py-2 px-6 rounded-lg flex items-center hover:bg-blue-700 transition-colors"
+                className="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-6 rounded-lg font-semibold transition-all duration-300 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center"
               >
                 Continue
-                <ArrowRight className="w-5 h-5 ml-2" />
+                <ArrowRight className="w-5 h-5 ml-3" />
               </button>
             </div>
           </div>
@@ -154,14 +155,15 @@ export function SetupWizard({ onClose }: { onClose: () => void }) {
               </button>
               <button
                 onClick={() => navigate('/companysearchwizard')}
-                className="bg-blue-600 text-white py-2 px-6 rounded-lg flex items-center hover:bg-blue-700 transition-colors"
+                className="bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-6 rounded-lg font-semibold transition-all duration-300 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center"
               >
                 Continue
-                <ArrowRight className="w-5 h-5 ml-2" />
+                <ArrowRight className="w-5 h-5 ml-3" />
               </button>
             </div>
           </div>
         )}
+        </div>
       </div>
     </div>
   );
