@@ -36,18 +36,19 @@ export function SetupWizard({ onClose }: { onClose: () => void }) {
             </p>
 
             <div className="grid md:grid-cols-2 gap-6">
-              <button
-                onClick={() => handleSelection('post')}
-                className="group p-6 border-2 border-gray-200 rounded-xl hover:border-blue-500 transition-colors"
-              >
-                <div className="flex flex-col items-center">
-                  <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-4 group-hover:bg-blue-500 transition-colors">
-                    <Building2 className="w-8 h-8 text-blue-600 group-hover:text-white" />
+              <div className="relative">
+                <div className="p-6 border-2 border-gray-300 rounded-xl cursor-not-allowed pointer-events-none w-full bg-gray-50">
+                  <div className="flex flex-col items-center">
+                    <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center mb-4">
+                      <Building2 className="w-8 h-8 text-gray-400" />
+                    </div>
+                    <h3 className="text-xl font-semibold mb-2 text-gray-500">Post a Gig</h3>
+                    <p className="text-gray-400 text-sm">For companies looking to hire contact center reps</p>
+                    <div className="mt-2 text-xs text-gray-500 font-medium bg-gray-200 px-2 py-1 rounded">Coming Soon</div>
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">Post a Gig</h3>
-                  <p className="text-gray-600 text-sm">For companies looking to hire contact center reps</p>
                 </div>
-              </button>
+                <div className="absolute inset-0 bg-black/10 rounded-xl pointer-events-none"></div>
+              </div>
 
               <button
                 onClick={() => handleSelection('find')}
