@@ -58,7 +58,7 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-custom flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-3xl w-full max-w-xl p-6 md:p-8 relative shadow-2xl border border-gray-100 card-hover">
+      <div className="bg-white rounded-3xl w-full max-w-2xl p-5 md:p-6 relative shadow-2xl border border-gray-100 card-hover">
         <button
           onClick={onClose}
           className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-full hover:bg-gray-100"
@@ -68,7 +68,7 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
         </button>
 
         <div className="text-center">
-          <div className="mb-8">
+          <div className="mb-4">
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
               Welcome to Harx!
             </h2>
@@ -78,7 +78,7 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
           </div>
 
           {type === 'company' ? (
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-2xl p-6 mb-6">
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-2xl p-6 mb-4">
               <div className="text-left">
                 <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
                   <Briefcase className="w-6 h-6 mr-3 text-blue-600" />
@@ -90,7 +90,7 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
                 <p className="text-gray-700 mb-4 font-medium">
                   The next steps will guide you through creating your company profile, including:
                 </p>
-                <ul className="space-y-3">
+                <ul className="space-y-1.5">
                   <li className="flex items-start text-gray-700">
                     <div className="p-1 bg-blue-200 rounded-full mr-3 mt-1">
                       <ArrowRight className="w-4 h-4 text-blue-600" />
@@ -119,7 +119,7 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
               </div>
             </div>
           ) : (
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-2xl p-6 mb-6">
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-2xl p-6 mb-4">
               <div className="text-left">
                 <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
                   <Award className="w-6 h-6 mr-3 text-blue-600" />
@@ -131,7 +131,7 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
                 <p className="text-gray-700 mb-4 font-medium">
                   Your profile setup will include:
                 </p>
-                <ul className="space-y-3">
+                <ul className="space-y-1.5">
                   <li className="flex items-start text-gray-700">
                     <div className="p-1 bg-blue-200 rounded-full mr-3 mt-1">
                       <Briefcase className="w-4 h-4 text-blue-600" />
@@ -157,7 +157,7 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
                     <span>Professional photo and personal statement</span>
                   </li>
                 </ul>
-                <p className="mt-6 text-gray-700 bg-white p-4 rounded-lg border border-blue-200">
+                <p className="mt-4 text-gray-700 bg-white p-4 rounded-lg border border-blue-200">
                   <strong>Pro tip:</strong> A complete profile increases your chances of finding the perfect gig that matches your skills and preferences.
                 </p>
               </div>
