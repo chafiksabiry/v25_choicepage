@@ -14,17 +14,17 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
   const [error, setError] = useState<string | null>(null);
   const userId = Cookies.get('userId');
   console.log('Stored userId from cookie:', userId);
-  
+
   const handleContinue = async () => {
     setLoading(true);
     setError(null);
-  
+
     try {
       console.log("Sending request with:", {
         userId,
         newType: type,
       });
-  
+
       const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/change-user-type`, {
         method: 'POST',
         headers: {
@@ -35,17 +35,17 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
           newType: type,
         }),
       });
-  
+
       const data = await response.json();
       console.log("Response from backend:", data);
-  
+
       if (!response.ok) {
         throw new Error(data.error || 'Failed to update user type');
       }
-  
+
       // Save new type in cookie (if backend doesn't do it)
       Cookies.set('userType', type);
-  
+
       // Redirect based on type
       window.location.href = type === 'company' ? '/app4' : '/repcreationprofile';
     } catch (err: any) {
@@ -55,11 +55,11 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
       setLoading(false);
     }
   };
-  
+
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-custom flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-3xl w-full max-w-3xl p-8 md:p-12 relative shadow-2xl border border-gray-100 card-hover">
-        <button 
+      <div className="bg-white rounded-3xl w-full max-w-xl p-6 md:p-8 relative shadow-2xl border border-gray-100 card-hover">
+        <button
           onClick={onClose}
           className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-full hover:bg-gray-100"
           aria-label="Close"
@@ -69,16 +69,16 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
 
         <div className="text-center">
           <div className="mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
               Welcome to Harx!
             </h2>
-            <p className="text-gray-600 text-lg">
+            <p className="text-gray-600">
               Let's get you started on your journey
             </p>
           </div>
-          
+
           {type === 'company' ? (
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-2xl p-8 mb-8">
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-2xl p-6 mb-6">
               <div className="text-left">
                 <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
                   <Briefcase className="w-6 h-6 mr-3 text-blue-600" />
@@ -119,7 +119,7 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
               </div>
             </div>
           ) : (
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-2xl p-8 mb-8">
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-2xl p-6 mb-6">
               <div className="text-left">
                 <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
                   <Award className="w-6 h-6 mr-3 text-blue-600" />
@@ -163,17 +163,17 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
               </div>
             </div>
           )}
-          
+
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
               <p className="text-red-700">{error}</p>
             </div>
           )}
-          
+
           <button
             onClick={handleContinue}
             disabled={loading}
-            className="btn-primary mx-auto disabled:opacity-50 disabled:cursor-not-allowed"
+            className="btn-primary mx-auto disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
           >
             {loading ? (
               <>
