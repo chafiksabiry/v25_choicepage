@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { Building2, Users, ArrowRight, Headphones, PhoneCall, MessagesSquare, Phone, HeadphonesIcon, Target, LogOut } from 'lucide-react';
 import { WelcomeMessage } from './components/WelcomeMessage';
-import { supabase } from './lib/supabase';
+import Cookies from 'js-cookie';
 import harxLogo from './assets/harx-blanc.jpg';
 
 function App() {
@@ -15,17 +15,19 @@ function App() {
     setShowWelcome(true);
   };
 
-  const handleLogout = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) console.error('Error signing out:', error);
-    } catch (error) {
-      console.error('Unexpected error signing out:', error);
-    } finally {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.reload();
-    }
+  const handleLogout = () => {
+    // Supprimer tous les cookies
+    const cookies = Cookies.get();
+    Object.keys(cookies).forEach(cookieName => {
+      Cookies.remove(cookieName, { path: '/' });
+      Cookies.remove(cookieName); // Fallback for cookies set without specific path
+    });
+
+    // Clear localStorage
+    localStorage.clear();
+
+    // Rediriger vers /app1
+    window.location.href = '/app1';
   };
 
   return (
