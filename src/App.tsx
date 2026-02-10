@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
-import { Building2, Users, ArrowRight, Headphones, PhoneCall, MessagesSquare, Phone, HeadphonesIcon, Target } from 'lucide-react';
+import { Building2, Users, ArrowRight, Headphones, PhoneCall, MessagesSquare, Phone, HeadphonesIcon, Target, LogOut } from 'lucide-react';
 import { WelcomeMessage } from './components/WelcomeMessage';
+import { supabase } from './lib/supabase';
 import harxLogo from './assets/harx-blanc.jpg';
 
 function App() {
@@ -14,27 +15,50 @@ function App() {
     setShowWelcome(true);
   };
 
+  const handleLogout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) console.error('Error signing out:', error);
+    } catch (error) {
+      console.error('Unexpected error signing out:', error);
+    } finally {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.reload();
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
-      <div 
+      <div
         className="h-[50vh] bg-cover bg-center relative"
         style={{
           backgroundImage: 'url("https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&q=80")'
         }}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/60"></div>
+
+        <button
+          onClick={handleLogout}
+          className="absolute top-4 right-4 z-20 p-2.5 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full text-white transition-all duration-300 border border-white/10 group shadow-lg"
+          aria-label="Logout"
+          title="Sign out"
+        >
+          <LogOut className="w-5 h-5 group-hover:scale-110 transition-transform" />
+        </button>
+
         <div className="absolute inset-0 flex items-center justify-center text-center px-4">
           <div className="max-w-[43rem] w-full p-1">
             {/* Logo HARX Rectangulaire */}
             <div className="overflow-hidden rounded-2xl mb-1 mt-0 mx-auto inline-block">
-              <img 
-                src={harxLogo} 
-                alt="HARX Logo" 
+              <img
+                src={harxLogo}
+                alt="HARX Logo"
                 className="w-64 h-32 md:w-80 md:h-[7rem] object-contain drop-shadow-2xl transition-all duration-300"
-                // style={{ borderRadius: '25px' }}
+              // style={{ borderRadius: '25px' }}
               />
             </div>
-            
+
             <h1 className="text-2xl md:text-3xl font-bold text-white mb-1 leading-tight text-shadow-lg">
               Transform Your Contact Center
             </h1>
@@ -51,9 +75,9 @@ function App() {
           {/* Company Card - Amélioré */}
           <div className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1 border border-gray-100 card-hover">
             <div className="h-40 rounded-t-2xl relative overflow-hidden">
-              <img 
-                src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&q=80" 
-                alt="Modern office" 
+              <img
+                src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&q=80"
+                alt="Modern office"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
@@ -93,7 +117,7 @@ function App() {
                   <span className="font-medium text-sm">Technical Support Specialists</span>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={() => handleShowWelcome('company')}
                 className="mt-4 w-full btn-primary flex items-center justify-center group-hover:from-blue-700 group-hover:to-blue-800"
               >
@@ -106,9 +130,9 @@ function App() {
           {/* Professional Card - Amélioré */}
           <div className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1 border border-gray-100 card-hover">
             <div className="h-40 rounded-t-2xl relative overflow-hidden">
-              <img 
-                src="https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&q=80" 
-                alt="Customer service professional" 
+              <img
+                src="https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&q=80"
+                alt="Customer service professional"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
@@ -148,7 +172,7 @@ function App() {
                   <span className="font-medium text-sm">Join Professional Communities</span>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={() => handleShowWelcome('rep')}
                 className="mt-4 w-full btn-primary flex items-center justify-center group-hover:from-blue-700 group-hover:to-blue-800"
               >
