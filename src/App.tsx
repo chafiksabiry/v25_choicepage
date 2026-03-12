@@ -31,9 +31,9 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
+    <div className="h-screen overflow-hidden bg-gradient-to-br from-gray-50 to-white flex flex-col">
       <div
-        className="h-[50vh] bg-cover bg-center relative"
+        className="h-[42vh] bg-cover bg-center relative flex-shrink-0"
         style={{
           backgroundImage: 'url("https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&q=80")'
         }}
@@ -56,15 +56,15 @@ function App() {
               <img
                 src={harxLogo}
                 alt="HARX Logo"
-                className="w-64 h-32 md:w-80 md:h-[7rem] object-contain drop-shadow-2xl transition-all duration-300"
+                className="w-48 h-24 md:w-64 md:h-[6rem] object-contain drop-shadow-2xl transition-all duration-300"
               // style={{ borderRadius: '25px' }}
               />
             </div>
 
-            <h1 className="text-2xl md:text-3xl font-bold text-white mb-1 leading-tight text-shadow-lg">
+            <h1 className="text-xl md:text-3xl font-bold text-white mb-1 leading-tight text-shadow-lg">
               Transform Your Contact Center
             </h1>
-            <p className="text-lg md:text-xl text-gray-100 max-w-2xl mx-auto leading-relaxed text-shadow">
+            <p className="text-sm md:text-lg text-gray-100 max-w-2xl mx-auto leading-relaxed text-shadow">
               Connect with opportunities or find the perfect talent for your customer service needs
             </p>
           </div>
@@ -72,8 +72,8 @@ function App() {
       </div>
 
       {/* Cards Section - Positionnement corrigé */}
-      <div className="container mx-auto px-4 py-4 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-4 lg:gap-6 max-w-5xl mx-auto">
+      <div className="flex-1 container mx-auto px-4 py-2 relative z-10 flex items-center justify-center overflow-hidden">
+        <div className="grid lg:grid-cols-2 gap-4 lg:gap-6 max-w-5xl w-full mx-auto">
           {/* Company Card - Amélioré */}
           <div className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-1 border border-gray-100 card-hover">
             <div className="h-40 rounded-t-2xl relative overflow-hidden">
