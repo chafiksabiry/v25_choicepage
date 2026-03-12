@@ -185,25 +185,7 @@ function App() {
           </div>
         </div>
 
-        {/* Footer Section - Amélioré */}
-        <div className="mt-6 text-center">
-          <div className="bg-white rounded-xl p-4 md:p-6 shadow-md border border-gray-100 max-w-3xl mx-auto">
-            <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">
-              Need Help Getting Started?
-            </h3>
-            <p className="text-gray-600 text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
-              Looking for something specific? Our team is here to help you find the perfect match and guide you through the process.
-            </p>
-            <div className="mt-4 flex flex-col sm:flex-row gap-2 justify-center">
-              <button className="btn-secondary">
-                Contact Support
-              </button>
-              <button className="btn-secondary bg-blue-100 text-blue-700 hover:bg-blue-200">
-                View Documentation
-              </button>
-            </div>
-          </div>
-        </div>
+
       </div>
 
       {showWelcome && welcomeType && (
