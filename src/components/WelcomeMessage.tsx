@@ -78,10 +78,10 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
           </div>
 
           {type === 'company' ? (
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-2xl p-6 mb-4">
+            <div className="bg-gradient-to-br from-harx-50 to-harx-100 border border-harx-200 rounded-2xl p-6 mb-4">
               <div className="text-left">
                 <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
-                  <Briefcase className="w-6 h-6 mr-3 text-blue-600" />
+                  <Briefcase className="w-6 h-6 mr-3 text-harx-600" />
                   Company Profile Setup
                 </h3>
                 <p className="text-gray-700 mb-6 leading-relaxed">
@@ -92,26 +92,26 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
                 </p>
                 <ul className="space-y-1.5">
                   <li className="flex items-start text-gray-700">
-                    <div className="p-1 bg-blue-200 rounded-full mr-3 mt-1">
-                      <ArrowRight className="w-4 h-4 text-blue-600" />
+                    <div className="p-1 bg-harx-200 rounded-full mr-3 mt-1">
+                      <ArrowRight className="w-4 h-4 text-harx-600" />
                     </div>
                     <span>Company information and description</span>
                   </li>
                   <li className="flex items-start text-gray-700">
-                    <div className="p-1 bg-blue-200 rounded-full mr-3 mt-1">
-                      <ArrowRight className="w-4 h-4 text-blue-600" />
+                    <div className="p-1 bg-harx-200 rounded-full mr-3 mt-1">
+                      <ArrowRight className="w-4 h-4 text-harx-600" />
                     </div>
                     <span>Contact details and location</span>
                   </li>
                   <li className="flex items-start text-gray-700">
-                    <div className="p-1 bg-blue-200 rounded-full mr-3 mt-1">
-                      <ArrowRight className="w-4 h-4 text-blue-600" />
+                    <div className="p-1 bg-harx-200 rounded-full mr-3 mt-1">
+                      <ArrowRight className="w-4 h-4 text-harx-600" />
                     </div>
                     <span>Company logo and branding materials</span>
                   </li>
                   <li className="flex items-start text-gray-700">
-                    <div className="p-1 bg-blue-200 rounded-full mr-3 mt-1">
-                      <ArrowRight className="w-4 h-4 text-blue-600" />
+                    <div className="p-1 bg-harx-200 rounded-full mr-3 mt-1">
+                      <ArrowRight className="w-4 h-4 text-harx-600" />
                     </div>
                     <span>Work environment and culture details</span>
                   </li>
@@ -119,10 +119,10 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
               </div>
             </div>
           ) : (
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-2xl p-6 mb-4">
+            <div className="bg-gradient-to-br from-harx-50 to-harx-100 border border-harx-200 rounded-2xl p-6 mb-4">
               <div className="text-left">
                 <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
-                  <Award className="w-6 h-6 mr-3 text-blue-600" />
+                  <Award className="w-6 h-6 mr-3 text-harx-alt-600" />
                   Professional Profile Setup
                 </h3>
                 <p className="text-gray-700 mb-6 leading-relaxed">
@@ -133,31 +133,31 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
                 </p>
                 <ul className="space-y-1.5">
                   <li className="flex items-start text-gray-700">
-                    <div className="p-1 bg-blue-200 rounded-full mr-3 mt-1">
-                      <Briefcase className="w-4 h-4 text-blue-600" />
+                    <div className="p-1 bg-harx-200 rounded-full mr-3 mt-1">
+                      <Briefcase className="w-4 h-4 text-harx-alt-600" />
                     </div>
                     <span>Work experience and specialized skills</span>
                   </li>
                   <li className="flex items-start text-gray-700">
-                    <div className="p-1 bg-blue-200 rounded-full mr-3 mt-1">
-                      <Award className="w-4 h-4 text-blue-600" />
+                    <div className="p-1 bg-harx-200 rounded-full mr-3 mt-1">
+                      <Award className="w-4 h-4 text-harx-alt-600" />
                     </div>
                     <span>Certifications and achievements</span>
                   </li>
                   <li className="flex items-start text-gray-700">
-                    <div className="p-1 bg-blue-200 rounded-full mr-3 mt-1">
-                      <Clock className="w-4 h-4 text-blue-600" />
+                    <div className="p-1 bg-harx-200 rounded-full mr-3 mt-1">
+                      <Clock className="w-4 h-4 text-harx-alt-600" />
                     </div>
                     <span>Availability and scheduling preferences</span>
                   </li>
                   <li className="flex items-start text-gray-700">
-                    <div className="p-1 bg-blue-200 rounded-full mr-3 mt-1">
-                      <ArrowRight className="w-4 h-4 text-blue-600" />
+                    <div className="p-1 bg-harx-200 rounded-full mr-3 mt-1">
+                      <ArrowRight className="w-4 h-4 text-harx-600" />
                     </div>
                     <span>Professional photo and personal statement</span>
                   </li>
                 </ul>
-                <p className="mt-4 text-gray-700 bg-white p-4 rounded-lg border border-blue-200">
+                <p className="mt-4 text-gray-700 bg-white p-4 rounded-lg border border-harx-alt-200">
                   <strong>Pro tip:</strong> A complete profile increases your chances of finding the perfect gig that matches your skills and preferences.
                 </p>
               </div>
@@ -173,7 +173,7 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
           <button
             onClick={handleContinue}
             disabled={loading}
-            className="btn-primary mx-auto disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            className="bg-gradient-to-r from-harx-500 to-harx-alt-500 text-white py-3 px-8 rounded-xl font-semibold flex items-center justify-center transition-all duration-300 hover:shadow-lg hover:shadow-harx-500/30 active:scale-[0.98] mx-auto disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
               <>

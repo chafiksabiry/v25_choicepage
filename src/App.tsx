@@ -56,7 +56,7 @@ function App() {
               <img
                 src={harxLogo}
                 alt="HARX Logo"
-                className="w-48 h-20 md:w-72 md:h-28 object-contain drop-shadow-2xl transition-all duration-500 hover:scale-105"
+                className="w-56 h-24 md:w-80 md:h-32 object-contain drop-shadow-2xl transition-all duration-500 hover:scale-105"
               />
             </div>
 
