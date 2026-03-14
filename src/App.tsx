@@ -3,7 +3,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import { Building2, Users, ArrowRight, Headphones, PhoneCall, MessagesSquare, Phone, HeadphonesIcon, Target, LogOut } from 'lucide-react';
 import { WelcomeMessage } from './components/WelcomeMessage';
 import Cookies from 'js-cookie';
-import harxLogo from './assets/logo_harx.png';
+import harxLogo from './assets/logo7.png';
 
 function App() {
   const navigate = useNavigate();
@@ -52,11 +52,11 @@ function App() {
         <div className="absolute inset-0 flex items-center justify-center text-center px-4">
           <div className="max-w-[43rem] w-full p-1">
             {/* Logo HARX Rectangulaire */}
-            <div className="overflow-hidden rounded-xl mb-3 mt-0 mx-auto inline-block bg-white p-2 shadow-xl border border-harx-100/50">
+            <div className="mb-4 mt-0 mx-auto inline-block">
               <img
                 src={harxLogo}
                 alt="HARX Logo"
-                className="w-48 h-12 md:w-64 md:h-16 object-contain transition-transform duration-500 hover:scale-105"
+                className="w-48 h-20 md:w-72 md:h-28 object-contain drop-shadow-2xl transition-all duration-500 hover:scale-105"
               />
             </div>
 
