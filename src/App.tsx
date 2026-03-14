@@ -3,7 +3,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import { Building2, Users, ArrowRight, Headphones, PhoneCall, MessagesSquare, Phone, HeadphonesIcon, Target, LogOut } from 'lucide-react';
 import { WelcomeMessage } from './components/WelcomeMessage';
 import Cookies from 'js-cookie';
-import harxLogo from './assets/logo7.png';
+import harxLogo from './assets/logo5.png';
 
 function App() {
   const navigate = useNavigate();
