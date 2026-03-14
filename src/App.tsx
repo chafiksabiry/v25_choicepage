@@ -3,7 +3,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import { Building2, Users, ArrowRight, Headphones, PhoneCall, MessagesSquare, Phone, HeadphonesIcon, Target, LogOut } from 'lucide-react';
 import { WelcomeMessage } from './components/WelcomeMessage';
 import Cookies from 'js-cookie';
-import harxLogo from './assets/harx-blanc.jpg';
+import harxLogo from './assets/logo_harx.png';
 
 function App() {
   const navigate = useNavigate();
@@ -31,14 +31,14 @@ function App() {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-gradient-to-br from-gray-50 to-white flex flex-col">
+    <div className="h-screen overflow-hidden bg-gradient-to-br from-harx-50 to-white flex flex-col animate-fade-in">
       <div
         className="h-[42vh] bg-cover bg-center relative flex-shrink-0"
         style={{
           backgroundImage: 'url("https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&q=80")'
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/60"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-harx-900/40"></div>
 
         <button
           onClick={handleLogout}
@@ -52,16 +52,15 @@ function App() {
         <div className="absolute inset-0 flex items-center justify-center text-center px-4">
           <div className="max-w-[43rem] w-full p-1">
             {/* Logo HARX Rectangulaire */}
-            <div className="overflow-hidden rounded-2xl mb-1 mt-0 mx-auto inline-block">
+            <div className="overflow-hidden rounded-xl mb-3 mt-0 mx-auto inline-block bg-white p-2 shadow-xl border border-harx-100/50">
               <img
                 src={harxLogo}
                 alt="HARX Logo"
-                className="w-48 h-24 md:w-64 md:h-[6rem] object-contain drop-shadow-2xl transition-all duration-300"
-              // style={{ borderRadius: '25px' }}
+                className="w-48 h-12 md:w-64 md:h-16 object-contain transition-transform duration-500 hover:scale-105"
               />
             </div>
 
-            <h1 className="text-xl md:text-3xl font-bold text-white mb-1 leading-tight text-shadow-lg">
+            <h1 className="text-xl md:text-3xl font-bold text-white mb-1 leading-tight text-shadow-lg bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300">
               Transform Your Contact Center
             </h1>
             <p className="text-sm md:text-lg text-gray-100 max-w-2xl mx-auto leading-relaxed text-shadow">
@@ -95,33 +94,33 @@ function App() {
             <div className="p-4 md:p-6">
               <div className="space-y-2 md:space-y-3">
                 <div className="flex items-center text-gray-700 hover:text-gray-900 transition-colors">
-                  <div className="p-1 bg-blue-100 rounded-lg mr-2">
-                    <HeadphonesIcon className="w-4 h-4 text-blue-600" />
+                  <div className="p-1 bg-harx-100 rounded-lg mr-2">
+                    <HeadphonesIcon className="w-4 h-4 text-harx-600" />
                   </div>
                   <span className="font-medium text-sm">Customer Service Representatives</span>
                 </div>
                 <div className="flex items-center text-gray-700 hover:text-gray-900 transition-colors">
-                  <div className="p-1 bg-blue-100 rounded-lg mr-2">
-                    <PhoneCall className="w-4 h-4 text-blue-600" />
+                  <div className="p-1 bg-harx-100 rounded-lg mr-2">
+                    <PhoneCall className="w-4 h-4 text-harx-600" />
                   </div>
                   <span className="font-medium text-sm">Telesales Professionals</span>
                 </div>
                 <div className="flex items-center text-gray-700 hover:text-gray-900 transition-colors">
-                  <div className="p-1 bg-blue-100 rounded-lg mr-2">
-                    <MessagesSquare className="w-4 h-4 text-blue-600" />
+                  <div className="p-1 bg-harx-100 rounded-lg mr-2">
+                    <MessagesSquare className="w-4 h-4 text-harx-600" />
                   </div>
                   <span className="font-medium text-sm">Live Chat Support Agents</span>
                 </div>
                 <div className="flex items-center text-gray-700 hover:text-gray-900 transition-colors">
-                  <div className="p-1 bg-blue-100 rounded-lg mr-2">
-                    <Target className="w-4 h-4 text-blue-600" />
+                  <div className="p-1 bg-harx-100 rounded-lg mr-2">
+                    <Target className="w-4 h-4 text-harx-600" />
                   </div>
                   <span className="font-medium text-sm">Technical Support Specialists</span>
                 </div>
               </div>
               <button
                 onClick={() => handleShowWelcome('company')}
-                className="mt-4 w-full btn-primary flex items-center justify-center group-hover:from-blue-700 group-hover:to-blue-800"
+                className="mt-4 w-full bg-gradient-harx text-white py-3 px-6 rounded-xl font-semibold flex items-center justify-center transition-all duration-300 hover:shadow-lg hover:shadow-harx-500/30 active:scale-[0.98] group-hover:opacity-90"
               >
                 Post a Gig
                 <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform" />
@@ -150,33 +149,33 @@ function App() {
             <div className="p-4 md:p-6">
               <div className="space-y-2 md:space-y-3">
                 <div className="flex items-center text-gray-700 hover:text-gray-900 transition-colors">
-                  <div className="p-1 bg-blue-100 rounded-lg mr-2">
-                    <Building2 className="w-4 h-4 text-blue-600" />
+                  <div className="p-1 bg-harx-alt-100 rounded-lg mr-2">
+                    <Building2 className="w-4 h-4 text-harx-alt-600" />
                   </div>
                   <span className="font-medium text-sm">Work with Leading Companies</span>
                 </div>
                 <div className="flex items-center text-gray-700 hover:text-gray-900 transition-colors">
-                  <div className="p-1 bg-blue-100 rounded-lg mr-2">
-                    <Phone className="w-4 h-4 text-blue-600" />
+                  <div className="p-1 bg-harx-alt-100 rounded-lg mr-2">
+                    <Phone className="w-4 h-4 text-harx-alt-600" />
                   </div>
                   <span className="font-medium text-sm">Remote Opportunities Available</span>
                 </div>
                 <div className="flex items-center text-gray-700 hover:text-gray-900 transition-colors">
-                  <div className="p-1 bg-blue-100 rounded-lg mr-2">
-                    <Headphones className="w-4 h-4 text-blue-600" />
+                  <div className="p-1 bg-harx-alt-100 rounded-lg mr-2">
+                    <Headphones className="w-4 h-4 text-harx-alt-600" />
                   </div>
                   <span className="font-medium text-sm">Flexible Scheduling Options</span>
                 </div>
                 <div className="flex items-center text-gray-700 hover:text-gray-900 transition-colors">
-                  <div className="p-1 bg-blue-100 rounded-lg mr-2">
-                    <Users className="w-4 h-4 text-blue-600" />
+                  <div className="p-1 bg-harx-alt-100 rounded-lg mr-2">
+                    <Users className="w-4 h-4 text-harx-alt-600" />
                   </div>
                   <span className="font-medium text-sm">Join Professional Communities</span>
                 </div>
               </div>
               <button
                 onClick={() => handleShowWelcome('rep')}
-                className="mt-4 w-full btn-primary flex items-center justify-center group-hover:from-blue-700 group-hover:to-blue-800"
+                className="mt-4 w-full bg-gradient-to-r from-harx-alt-500 to-harx-500 text-white py-3 px-6 rounded-xl font-semibold flex items-center justify-center transition-all duration-300 hover:shadow-lg hover:shadow-harx-alt-500/30 active:scale-[0.98] group-hover:opacity-90"
               >
                 Find Gigs
                 <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform" />
