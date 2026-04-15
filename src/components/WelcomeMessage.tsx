@@ -47,7 +47,7 @@ export function WelcomeMessage({ type, onClose }: WelcomeMessageProps) {
       Cookies.set('userType', type);
 
       // Redirect based on type
-      window.location.href = type === 'company' ? '/app4' : '/repcreationprofile';
+      window.location.href = type === 'company' ? '/app11' : '/repcreationprofile';
     } catch (err: any) {
       setError(err.message || 'Something went wrong');
       console.error("Error updating user type:", err);
