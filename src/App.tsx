@@ -34,11 +34,11 @@ function App() {
   return (
     <div className="h-screen overflow-hidden bg-gradient-to-br from-harx-50 to-white flex flex-col animate-fade-in relative">
       {/* Navbar */}
-      <nav className="absolute top-0 left-0 right-0 z-30 bg-black/20 backdrop-blur-md border-b border-white/10 px-8 py-4 flex items-center justify-between">
+      <nav className="absolute top-0 left-0 right-0 z-30 bg-black border-b border-white/10 px-8 py-4 flex items-center justify-between">
         <img 
-          src={logoBlanc} 
+          src={harxLogo} 
           alt="HARX Logo" 
-          className="h-10 md:h-12 object-contain filter drop-shadow" 
+          className="h-10 md:h-12 object-contain" 
         />
         <button
           onClick={handleLogout}
