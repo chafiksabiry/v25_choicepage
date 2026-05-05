@@ -3,8 +3,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import { Building2, Users, ArrowRight, Headphones, PhoneCall, MessagesSquare, Phone, HeadphonesIcon, Target, LogOut } from 'lucide-react';
 import { WelcomeMessage } from './components/WelcomeMessage';
 import Cookies from 'js-cookie';
-import harxLogo from './assets/logo5.png';
-import logoBlanc from './assets/logo-harx-blanc.svg';
+import logoWhite from './assets/logo white.png';
 
 function App() {
   const navigate = useNavigate();
@@ -36,7 +35,7 @@ function App() {
       {/* Navbar */}
       <nav className="absolute top-0 left-0 right-0 z-30 bg-black border-b border-white/10 px-8 py-4 flex items-center justify-between">
         <img 
-          src={harxLogo} 
+          src={logoWhite} 
           alt="HARX Logo" 
           className="h-10 md:h-12 object-contain" 
         />
