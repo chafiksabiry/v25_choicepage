@@ -4,6 +4,7 @@ import { Building2, Users, ArrowRight, Headphones, PhoneCall, MessagesSquare, Ph
 import { WelcomeMessage } from './components/WelcomeMessage';
 import Cookies from 'js-cookie';
 import harxLogo from './assets/logo5.png';
+import logoBlanc from './assets/logo-harx-blanc.svg';
 
 function App() {
   const navigate = useNavigate();
@@ -31,7 +32,23 @@ function App() {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-gradient-to-br from-harx-50 to-white flex flex-col animate-fade-in">
+    <div className="h-screen overflow-hidden bg-gradient-to-br from-harx-50 to-white flex flex-col animate-fade-in relative">
+      {/* Navbar */}
+      <nav className="absolute top-0 left-0 right-0 z-30 bg-black/20 backdrop-blur-md border-b border-white/10 px-8 py-4 flex items-center justify-between">
+        <img 
+          src={logoBlanc} 
+          alt="HARX Logo" 
+          className="h-10 md:h-12 object-contain filter drop-shadow" 
+        />
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/25 text-white rounded-xl font-bold uppercase tracking-wider text-xs border border-white/10 transition-all shadow-lg backdrop-blur"
+        >
+          <LogOut className="w-4 h-4" />
+          Déconnexion
+        </button>
+      </nav>
+
       <div
         className="h-[42vh] bg-cover bg-center relative flex-shrink-0"
         style={{
@@ -40,25 +57,10 @@ function App() {
       >
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-harx-900/40"></div>
 
-        <button
-          onClick={handleLogout}
-          className="absolute top-4 right-4 z-20 p-2.5 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full text-white transition-all duration-300 border border-white/10 group shadow-lg"
-          aria-label="Logout"
-          title="Sign out"
-        >
-          <LogOut className="w-5 h-5 group-hover:scale-110 transition-transform" />
-        </button>
-
         <div className="absolute inset-0 flex items-center justify-center text-center px-4">
           <div className="max-w-[43rem] w-full p-1">
-            {/* Logo HARX Rectangulaire */}
-            <div className="mb-4 mt-0 mx-auto inline-block">
-              <img
-                src={harxLogo}
-                alt="HARX Logo"
-                className="w-56 h-24 md:w-80 md:h-32 object-contain drop-shadow-2xl transition-all duration-500 hover:scale-105"
-              />
-            </div>
+            {/* Title text with padding to avoid navbar overlap */}
+            <div className="pt-16"></div>
 
             <h1 className="text-xl md:text-3xl font-bold text-white mb-1 leading-tight text-shadow-lg bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300">
               Transform Your Contact Center
