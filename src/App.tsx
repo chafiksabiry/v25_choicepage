@@ -3,7 +3,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import { Building2, Users, ArrowRight, Headphones, PhoneCall, MessagesSquare, Phone, HeadphonesIcon, Target, LogOut } from 'lucide-react';
 import { WelcomeMessage } from './components/WelcomeMessage';
 import Cookies from 'js-cookie';
-import logoWhite from './assets/logo white.png';
+import logoNoir from './assets/logo-harx-noir.svg';
 
 function App() {
   const navigate = useNavigate();
@@ -33,15 +33,15 @@ function App() {
   return (
     <div className="h-screen overflow-hidden bg-gradient-to-br from-harx-50 to-white flex flex-col animate-fade-in relative">
       {/* Navbar */}
-      <nav className="absolute top-0 left-0 right-0 z-30 bg-black border-b border-white/10 px-8 py-4 flex items-center justify-between">
+      <nav className="absolute top-0 left-0 right-0 z-30 bg-white/90 backdrop-blur-md border-b border-slate-200 px-8 py-4 flex items-center justify-between shadow-sm">
         <img 
-          src={logoWhite} 
+          src={logoNoir} 
           alt="HARX Logo" 
           className="h-10 md:h-12 object-contain" 
         />
         <button
           onClick={handleLogout}
-          className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/25 text-white rounded-xl font-bold uppercase tracking-wider text-xs border border-white/10 transition-all shadow-lg backdrop-blur"
+          className="flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl font-bold uppercase tracking-wider text-xs border border-slate-200 transition-all shadow-sm"
         >
           <LogOut className="w-4 h-4" />
           Déconnexion
